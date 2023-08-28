@@ -1,27 +1,53 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Union
 
-class ListAccounts(BaseModel):
+#Inputs
+class ListAccountsInput(BaseModel):
     pass
 
 class GetAccounts(BaseModel):
-    name: str = Field(default = "")
+    #name: str = Field(d    efault = "")
+    name: str = "admin"
 
-class ListApplicationsInput(BaseModel):
-    name: Optional[str] = None
-    refresh: Optional[str] = None
-    projects: Optional[List[str]] = None
-    resourceVersion: Optional[str] = None
-    selector: Optional[str] = None
-    repo: Optional[str] = None
-    appNamespace: Optional[str] = None
-    project: Optional[List[str]] = None
+class CanI(BaseModel):
+    resource: str
+    action: str
+    subresource: str
 
-class SyncName(BaseModel):
+class UpdatePassword(BaseModel):
+    currentPassword: str
     name: str
+    newPassword: str
 
-class ListProjects(BaseModel):
-    pass
-
-class ListProjectsName(BaseModel):
+class CreateToken(BaseModel):
     name: str
+    expiresIn: Optional[Union[str,int]] = "600"
+    id: Optional[str]
+    name: Optional[str] = "default"
+
+class DeleteToken(BaseModel):
+    name: str
+    id: str
+
+#Outputs
+
+class accountToken(BaseModel):
+    expiresAt: str
+    id: str
+    issuedAt: str
+
+class accountAccount(BaseModel):
+    name: str
+    enabled: bool
+    capabilities: List[str]
+    tokens: Optional[List[accountToken]]
+    
+class accountAccountsList(BaseModel):
+    items: List[accountAccount]
+
+class accountCanIResponse(BaseModel):
+    value: str
+
+class accountCreateTokenResponse(BaseModel):
+    token: str
+

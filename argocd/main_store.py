@@ -19,4 +19,4 @@ import kubiya
 #      merge_requests
 # )
 
-from .actions import accountservice
+from .actions import accountservice, applicationservice, applicationsetservice, clusterservice, repositoryservice
