@@ -9,7 +9,21 @@ from ..http_wrapper import *
 @action_store.kubiya_action()
 def list_all_projects(input: ProjectListRequest):
     response = get_wrapper(endpoint=f'/projects', args=input.dict(exclude_none=True))
-    return Projects(projects=response)
+
+    ProjectsList = []
+    for i in response:
+        element = ProjectsListResponse(
+            id = i['id'],
+            description = i['description'],
+            name = i['name'],
+            nameWithNameSpace = i['name_with_namespace'],
+            webURL = i['web_url'],
+            lastActivityAt = i['last_activity_at']
+        )
+        ProjectsList.append(element)
+
+    return ProjectsList
+
 
 @action_store.kubiya_action()
 def list_user_projects(input: UsersUseridProjects):

@@ -7,6 +7,14 @@ from enum import Enum
 class Projects(BaseModel):
     projects:List[dict]
 
+class ProjectsListResponse(BaseModel):
+    id: str = None
+    description: str = None
+    name: str = None
+    nameWithNameSpace: str = None
+    webURL: str = None
+    lastActivityAt: str = None
+
 class SingleProject(BaseModel):
     projects: dict
 
@@ -218,35 +226,8 @@ class SingleGroup(BaseModel):
 #     full_path: Optional[str]
 
 class ProjectListRequest(BaseModel):
-    archived: Optional[bool] = Field(None)
-    id_after: Optional[int] = Field(None)
-    id_before: Optional[int] = Field(None)
-    imported: Optional[bool] = Field(None)
-    last_activity_after: Optional[datetime] = Field(None)
-    last_activity_before: Optional[datetime] = Field(None)
-    membership: Optional[bool] = Field(None)
-    min_access_level: Optional[int] = Field(None)
-    order_by: Optional[str] = Field(None)
     owned: Optional[bool] = Field(None)
-    repository_checksum_failed: Optional[bool] = Field(None)
-    repository_storage: Optional[str] = Field(None)
-    search_namespaces: Optional[bool] = Field(None)
-    search: Optional[str] = Field(None)
-    simple: Optional[bool] = Field(None)
-    sort: Optional[str] = Field(None)
     starred: Optional[bool] = Field(None)
-    statistics: Optional[bool] = Field(None)
-    topic: Optional[str] = Field(None)
-    topic_id: Optional[int] = Field(None)
-    visibility: Optional[str] = Field(None)
-    wiki_checksum_failed: Optional[bool] = Field(None)
-    with_custom_attributes: Optional[bool] = Field(None)
-    with_issues_enabled: Optional[bool] = Field(None)
-    with_merge_requests_enabled: Optional[bool] = Field(None)
-    with_programming_language: Optional[str] = Field(None)
-    updated_before: Optional[datetime] = Field(None)
-    updated_after: Optional[datetime] = Field(None)
-    custom_attributes: Optional[Dict[str, str]] = Field(None, description='A dictionary of custom attributes to filter by')
     
 class UsersUseridProjects(BaseModel):
     user_id: str
@@ -394,6 +375,7 @@ class CreateProjectRequest(BaseModel):
     visibility: Optional[str] = Field(None, description='See project visibility level.')
     wiki_access_level: Optional[str] = Field(None, description='One of disabled, private, or enabled.')
     wiki_enabled: Optional[bool] = Field(None, description='(Deprecated) Enable wiki for this project. Use wiki_access_level instead.')
+
 class ProjectsUserUserid(BaseModel):
     user_id: int
     name: str
