@@ -21,7 +21,7 @@ def get_api_token():
     response.raise_for_status()
     token = response.json().get('access_token')
     logger.debug(f"Token: {token}")
-    return toke
+    return token
 
 def get_session():
     session = Session()
