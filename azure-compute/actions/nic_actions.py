@@ -3,7 +3,7 @@ import logging
 from .. import action_store as action_store
 from ..azure_wrapper import *
 # from ..models.vmss_models import *
-from ..models.networkInterface_models import *
+from ..models.nic_models import *
 from typing import Union
 
 logger = logging.getLogger(__name__)
@@ -16,8 +16,8 @@ def create_or_update_azure_networkInterface(params: networkInterfaceCreationPara
     vmName = params.vmName
     networkInterface_data = {
                             "properties": {
-                                "enableAcceleratedNetworking": true,
-                                "disableTcpStateTracking": true,
+                                "enableAcceleratedNetworking": True,
+                                "disableTcpStateTracking": True,
                                 "ipConfigurations": [
                                 {
                                     "name": "ipconfig1",

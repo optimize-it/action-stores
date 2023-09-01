@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 #     return snapshotsModel(**response_data)
 
 @action_store.kubiya_action()
-def get_azure_snapshots(params: snapshotsCreationParameters) -> Union[snapshotsModel, dict]:
+def get_azure_snapshots(params: SnapshotCreationParameters) -> Union[SnapshotModel, dict]:
     subscriptionId = params.subscriptionId
     resourceGroupName = params.resourceGroupName
     snapshotsName = params.snapshotsName
@@ -37,22 +37,22 @@ def get_azure_snapshots(params: snapshotsCreationParameters) -> Union[snapshotsM
 
     response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
 
-    return snapshotsModel(**response_data)
+    return SnapshotModel(**response_data)
 
 @action_store.kubiya_action()
-def listall_azure_snapshots(params: snapshotsListParameters) -> Union[snapshotsListModel, dict]:
+def listall_azure_snapshots(params: SnapshotListParameters) -> Union[SnapshotListModel, dict]:
     #subscriptionId = params.subscriptionId
     endpoint = f"subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/snapshots"
     api_version = "2022-11-01"
     response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
     snapshots_list = response_data.get('value', [])
-    return [snapshotsListModel(**snapshots) for snapshots in snapshots_list]
+    return [SnapshotListModel(**snapshots) for snapshots in snapshots_list]
 
-def list_by_rg_azure_snapshots(params: snapshotsListParameters) -> Union[snapshotsListModel, dict]:
+def list_by_rg_azure_snapshots(params: SnapshotListParameters) -> Union[SnapshotListModel, dict]:
     #subscriptionId = params.subscriptionId
     endpoint = f"subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/snapshots"
     api_version = "2022-11-01"
     response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
     snapshots_list = response_data.get('value', [])
-    return [snapshotsListModel(**snapshots) for snapshots in snapshots_list]
+    return [SnapshotListModel(**snapshots) for snapshots in snapshots_list]
     
