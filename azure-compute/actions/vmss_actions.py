@@ -237,4 +237,12 @@ def list_by_location_virtual_machines_scaleset(params: VMSSGetParametersByLocati
     vm_list = response_data.get('value', [])
     return [VirtualMachineSSListModel(**vmss) for vmss in vm_list]
 
+def delete_virtual_machine_scaleset(params: VMSSQueryParameters):
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    vmssName = params.vmssName
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/redeploy"
+    api_version = "2023-07-01"
+    response_data = delete_wrapper(endpoint, subscriptionId, api_version)
+    return response_data
 
