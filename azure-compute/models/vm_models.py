@@ -183,3 +183,10 @@ class SkusParams(BaseModel):
 class MachineSizesParams(BaseModel):
     subscriptionId: str
     location: str
+
+
+
+class VMByLocationListParameters(BaseModel):
+    subscriptionId: str
+    location: str
+    # resourceGroupName: str

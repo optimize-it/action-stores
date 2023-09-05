@@ -170,3 +170,104 @@ def get_machine_sizes(params: MachineSizesParams):
 
     return response_data
 
+@action_store.kubiya_action()
+def delete_virtual_machine(params: VMQueryParameters):
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    vmName = params.vmName
+
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}"
+    api_version = "2023-07-01"
+
+    response_data = delete_wrapper(endpoint, subscriptionId, api_version)
+
+    return response_data
+
+@action_store.kubiya_action()
+def poweroff_virtual_machine(params: VMQueryParameters):
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    vmName = params.vmName
+
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/powerOff"
+    api_version = "2023-07-01"
+
+    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+
+    return response_data
+
+@action_store.kubiya_action()
+def deallocate_virtual_machine(params: VMQueryParameters):
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    vmName = params.vmName
+
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/deallocate"
+    api_version = "2023-07-01"
+
+    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+
+    return response_data
+
+@action_store.kubiya_action()
+def restart_virtual_machine(params: VMQueryParameters):
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    vmName = params.vmName
+
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/restart"
+    api_version = "2023-07-01"
+
+    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+
+    return response_data
+
+@action_store.kubiya_action()
+def redeploy_virtual_machine(params: VMQueryParameters):
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    vmName = params.vmName
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/redeploy"
+    api_version = "2023-07-01"
+    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+    return response_data
+
+@action_store.kubiya_action()
+def instance_view_virtual_machine(params: VMQueryParameters):
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    vmName = params.vmName
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/instanceView"
+    api_version = "2023-07-01"
+    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+    return response_data
+
+@action_store.kubiya_action()
+def start_virtual_machine(params: VMQueryParameters):
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    vmName = params.vmName
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/start"
+    api_version = "2023-07-01"
+    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+    return response_data
+
+@action_store.kubiya_action()
+def list_virtual_machine(params: VMQueryParameters) -> List[VirtualMachineResponseModel]:
+    subscriptionId = params.subscriptionId
+    resourceGroupName = params.resourceGroupName
+    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines"
+    api_version = "2023-07-01"
+    response_data = get_wrapper(endpoint, subscriptionId, api_version)
+    vm_list = response_data.get('value', [])
+    return [VirtualMachineListModel(**vm) for vm in vm_list]
+
+@action_store.kubiya_action()
+def list_by_location_virtual_machine(params: VMByLocationListParameters) -> List[VirtualMachineListModel]:
+    subscriptionId = params.subscriptionId
+    # resourceGroupName = params.resourceGroupName
+    endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/locations/{params.location}/virtualMachines"
+    api_version = "2023-07-01"
+    response_data = get_wrapper(endpoint, subscriptionId, api_version)
+    vm_list = response_data.get('value', [])
+    return [VirtualMachineListModel(**vm) for vm in vm_list]

@@ -63,3 +63,36 @@ def put_wrapper(endpoint: str, subscriptionId: str, api_version: str, data: dict
             logger.error(f"PUT request failed with status {response.status_code} for URL: {url}")
             logger.error(f"Error response: {response.text}")
             return {"error": str(err)}  # Return the error as a string
+        
+def delete_wrapper(endpoint: str, subscriptionId: str, api_version: str):
+    session = get_session()
+    base_url = "https://management.azure.com"
+    url = f"{base_url}{endpoint}?api-version={api_version}"
+    response = session.delete(url)
+    if 200 <= response.status_code < 300:
+        logger.info(f"Successful delete request: {url}")
+        return response.json()
+    else:
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            logger.error(f"DELETE request failed with status {response.status_code} for URL: {url}")
+            logger.error(f"Error response: {response.text}")
+            return {"error": str(err)}
+        
+
+def patch_wrapper(endpoint: str, subscriptionId: str, api_version: str):
+    session = get_session()
+    base_url = "https://management.azure.com"
+    url = f"{base_url}{endpoint}?api-version={api_version}"
+    response = session.patch(url)
+    if 200 <= response.status_code < 300:
+        logger.info(f"Successful delete request: {url}")
+        return response.json()
+    else:
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            logger.error(f"PATCH request failed with status {response.status_code} for URL: {url}")
+            logger.error(f"Error response: {response.text}")
+            return {"error": str(err)}
