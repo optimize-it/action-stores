@@ -10,115 +10,139 @@ logger = logging.getLogger(__name__)
 
 @action_store.kubiya_action()
 def create_or_update_virtual_machine(params: VMCreationParameters) -> Union[VirtualMachineResponseModel, dict]:
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
-    networkInterfaceName = params.networkInterfaceName
-    vm_data = {
-        "location": params.location,
-        "properties": {
-            "hardwareProfile": {"vmSize": params.vmSize},
-            "osProfile": {
-                "computerName": params.computer_name,
-                "adminUsername": params.admin_username,
-                "adminPassword": params.admin_password,
-            },
-            "storageProfile": {
-                "imageReference": {
-                    "publisher": params.publisher,
-                    "offer": params.offer,
-                    "sku": params.sku,
-                    "version": params.version,
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
+        networkInterfaceName = params.networkInterfaceName
+        vm_data = {
+            "location": params.location,
+            "properties": {
+                "hardwareProfile": {"vmSize": params.vmSize},
+                "osProfile": {
+                    "computerName": params.computer_name,
+                    "adminUsername": params.admin_username,
+                    "adminPassword": params.admin_password,
                 },
-            },
-            "networkProfile": {
-                "networkInterfaces": [
-                    {
-                        "id": f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkInterfaces/{networkInterfaceName}",
-                        "properties": {
-                            "primary": True
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": params.publisher,
+                        "offer": params.offer,
+                        "sku": params.sku,
+                        "version": params.version,
+                    },
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkInterfaces/{networkInterfaceName}",
+                            "properties": {
+                                "primary": True
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         }
-    }
 
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}"
-    api_version = "2023-03-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}"
+        api_version = "2023-03-01"
 
-    response_data = put_wrapper(endpoint, subscriptionId, api_version, data=vm_data)
+        response_data = put_wrapper(endpoint, subscriptionId, api_version, data=vm_data)
 
-    return VirtualMachineResponseModel(**response_data)
+        return VirtualMachineResponseModel(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to create virtual machine : {e}")
+        raise
 
 
 
 @action_store.kubiya_action()
 def get_virtual_machine(params: VMQueryParameters) -> Union[VirtualMachineResponseModel, dict]:
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
 
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}"
-    api_version = "2023-03-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}"
+        api_version = "2023-03-01"
 
-    response_data = get_wrapper(endpoint, subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, subscriptionId, api_version)
 
-    return VirtualMachineResponseModel(**response_data)
+        return VirtualMachineResponseModel(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to get the VM : {e}")
+        raise
 
 
 
 @action_store.kubiya_action()
 def list_all_virtual_machines(params: VMListParameters) -> List[VirtualMachineListModel]:
-    endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/virtualMachines"
-    api_version = "2023-03-01"
+    try:
+        endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/virtualMachines"
+        api_version = "2023-03-01"
 
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
 
-    vm_list = response_data.get('value', [])
-    return [VirtualMachineListModel(**vm) for vm in vm_list]
+        vm_list = response_data.get('value', [])
+        return [VirtualMachineListModel(**vm) for vm in vm_list]
+    except Exception as e:
+        logger.error(f"Failed to list all VMs : {e}")
+        raise
 
 
 
 @action_store.kubiya_action()
 def get_subscriptions(params: SubscriptionQueryParameters) -> Union[SubscriptionListResult, dict]:
-    endpoint = "/subscriptions"
-    api_version = "2020-01-01"
+    try:
+        endpoint = "/subscriptions"
+        api_version = "2020-01-01"
 
-    response_data = get_wrapper(endpoint, '', api_version)
+        response_data = get_wrapper(endpoint, '', api_version)
 
-    return SubscriptionListResult(**response_data)
+        return SubscriptionListResult(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to get subscription : {e}")
+        raise
 
 
 
 @action_store.kubiya_action()
 def get_resource_groups(params: RGQueryParameters) -> Union[ResourceGroupListResult, dict]:
-    subscriptionId = params.subscriptionId
-    endpoint = f"/subscriptions/{subscriptionId}/resourcegroups"
-    api_version = "2021-04-01"
+    try:
+        subscriptionId = params.subscriptionId
+        endpoint = f"/subscriptions/{subscriptionId}/resourcegroups"
+        api_version = "2021-04-01"
 
-    response_data = get_wrapper(endpoint, subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, subscriptionId, api_version)
 
-    if response_data:
-        return ResourceGroupListResult(**response_data)
-    else:
-        return None
-    
+        if response_data:
+            return ResourceGroupListResult(**response_data)
+        else:
+            return None
+    except Exception as e:
+        logger.error(f"Failed to get resource group : {e}")
+        raise
 
 
 @action_store.kubiya_action()
 def get_network_interfaces(params: NetworkInterfaceParams) -> Union[NetworkInterfaceListResult, dict]:
-    endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Network/networkInterfaces"
-    api_version = "2022-11-01"
+    try:
+        endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Network/networkInterfaces"
+        api_version = "2022-11-01"
 
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
 
-    return NetworkInterfaceListResult(**response_data)
+        return NetworkInterfaceListResult(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to get_network_interfaces : {e}")
+        raise
 
 
 
 @action_store.kubiya_action()
 def get_publishers(params: PublisherParams):
+
     endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/locations/{params.location}/publishers"
     api_version = "2023-03-01"
 
@@ -172,102 +196,138 @@ def get_machine_sizes(params: MachineSizesParams):
 
 @action_store.kubiya_action()
 def delete_virtual_machine(params: VMQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
 
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}"
-    api_version = "2023-07-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}"
+        api_version = "2023-07-01"
 
-    response_data = delete_wrapper(endpoint, subscriptionId, api_version)
+        response_data = delete_wrapper(endpoint, subscriptionId, api_version)
 
-    return response_data
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to delete VM : {e}")
+        raise
 
 @action_store.kubiya_action()
 def poweroff_virtual_machine(params: VMQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
 
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/powerOff"
-    api_version = "2023-07-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/powerOff"
+        api_version = "2023-07-01"
 
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
 
-    return response_data
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to poweroff VM : {e}")
+        raise
 
 @action_store.kubiya_action()
 def deallocate_virtual_machine(params: VMQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
 
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/deallocate"
-    api_version = "2023-07-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/deallocate"
+        api_version = "2023-07-01"
 
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
 
-    return response_data
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to deallocate VM : {e}")
+        raise
 
 @action_store.kubiya_action()
 def restart_virtual_machine(params: VMQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
 
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/restart"
-    api_version = "2023-07-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/restart"
+        api_version = "2023-07-01"
 
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
 
-    return response_data
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to restart VM : {e}")
+        raise
 
 @action_store.kubiya_action()
 def redeploy_virtual_machine(params: VMQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/redeploy"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/redeploy"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to redeploy VM : {e}")
+        raise
 
 @action_store.kubiya_action()
 def instance_view_virtual_machine(params: VMQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/instanceView"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/instanceView"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to view instance: {e}")
+        raise
 
 @action_store.kubiya_action()
 def start_virtual_machine(params: VMQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmName = params.vmName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/start"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmName = params.vmName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/start"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to start VM : {e}")
+        raise
 
 @action_store.kubiya_action()
 def list_virtual_machine(params: VMQueryParameters) -> List[VirtualMachineResponseModel]:
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines"
-    api_version = "2023-07-01"
-    response_data = get_wrapper(endpoint, subscriptionId, api_version)
-    vm_list = response_data.get('value', [])
-    return [VirtualMachineListModel(**vm) for vm in vm_list]
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines"
+        api_version = "2023-07-01"
+        response_data = get_wrapper(endpoint, subscriptionId, api_version)
+        vm_list = response_data.get('value', [])
+        return [VirtualMachineListModel(**vm) for vm in vm_list]
+    except Exception as e:
+        logger.error(f"Failed to list VM : {e}")
+        raise
 
 @action_store.kubiya_action()
 def list_by_location_virtual_machine(params: VMByLocationListParameters) -> List[VirtualMachineListModel]:
-    subscriptionId = params.subscriptionId
-    # resourceGroupName = params.resourceGroupName
-    endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/locations/{params.location}/virtualMachines"
-    api_version = "2023-07-01"
-    response_data = get_wrapper(endpoint, subscriptionId, api_version)
-    vm_list = response_data.get('value', [])
-    return [VirtualMachineListModel(**vm) for vm in vm_list]
+    try:
+        subscriptionId = params.subscriptionId
+        # resourceGroupName = params.resourceGroupName
+        endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/locations/{params.location}/virtualMachines"
+        api_version = "2023-07-01"
+        response_data = get_wrapper(endpoint, subscriptionId, api_version)
+        vm_list = response_data.get('value', [])
+        return [VirtualMachineListModel(**vm) for vm in vm_list]
+    except Exception as e:
+        logger.error(f"Failed to list VMs : {e}")
+        raise

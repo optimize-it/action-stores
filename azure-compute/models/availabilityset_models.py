@@ -7,6 +7,11 @@ class availabilitysetCreationParameters(BaseModel):
     subscriptionId: str
     update_domain: int
     fault_domain: int
+
+class availabilitysetGetParameters(BaseModel):
+    availabilitySetName: str
+    resourceGroupName: str
+    subscriptionId: str
     
 class availabilitysetResponseModel(BaseModel):
     availabilitySetName: Optional[str]

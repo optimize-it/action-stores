@@ -64,7 +64,7 @@ def put_wrapper(endpoint: str, subscriptionId: str, api_version: str, data: dict
             logger.error(f"Error response: {response.text}")
             return {"error": str(err)}  # Return the error as a string
         
-def delete_wrapper(endpoint: str, subscriptionId: str, api_version: str):
+def delete_wrapper(endpoint: str, subscriptionId: str, api_version: str) -> dict:
     session = get_session()
     base_url = "https://management.azure.com"
     url = f"{base_url}{endpoint}?api-version={api_version}"
@@ -81,11 +81,11 @@ def delete_wrapper(endpoint: str, subscriptionId: str, api_version: str):
             return {"error": str(err)}
         
 
-def patch_wrapper(endpoint: str, subscriptionId: str, api_version: str):
+def patch_wrapper(endpoint: str, subscriptionId: str, api_version: str, data: dict = None) -> dict:
     session = get_session()
     base_url = "https://management.azure.com"
     url = f"{base_url}{endpoint}?api-version={api_version}"
-    response = session.patch(url)
+    response = session.patch(url, json=data)
     if 200 <= response.status_code < 300:
         logger.info(f"Successful delete request: {url}")
         return response.json()

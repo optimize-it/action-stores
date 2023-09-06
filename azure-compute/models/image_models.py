@@ -8,6 +8,11 @@ class ImageCreationParameters(BaseModel):
     resourceGroupName: str
     vmName: str
     location: str
+
+class ImageGetParameters(BaseModel):
+    imageName: str
+    subscriptionId: str
+    resourceGroupName: str
     
 class ImageModel(BaseModel):
     id: Optional[str]

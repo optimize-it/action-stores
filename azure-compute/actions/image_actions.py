@@ -28,16 +28,20 @@ def create_or_update_azure_image(params: ImageCreationParameters) -> Union[Image
     return ImageModel(**response_data)
 
 @action_store.kubiya_action()
-def get_azure_images(params: ImageCreationParameters) -> Union[ImageModel, dict]:
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    imageName = params.imageName
-    endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}"
-    api_version = "2022-11-01"
+def get_azure_images(params: ImageGetParameters) -> Union[ImageModel, dict]:
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        imageName = params.imageName
+        endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}"
+        api_version = "2022-11-01"
 
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
 
-    return ImageModel(**response_data)
+        return ImageModel(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to get image: {e}")
+        raise
 
 @action_store.kubiya_action()
 def listall_azure_images(params: ImageListParameters) -> Union[ImageListModel, dict]:

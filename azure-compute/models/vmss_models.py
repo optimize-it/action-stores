@@ -79,3 +79,8 @@ class VMSSInstanceDeleteParameters(BaseModel):
     resourceGroupName: str
     vmssName: str
     instanceId: str
+
+class vmssAvailableSkus(BaseModel):
+    subscriptionId: str
+    resourceGroupName: str
+    vmssName: str

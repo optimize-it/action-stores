@@ -53,34 +53,42 @@ def create_or_update_virtual_machine(params: VMCreationParameters) -> Union[Virt
 
         return VirtualMachineResponseModel(**response_data)
     except Exception as e:
-        logger.error(f"Failed to create issue: {e}")
+        logger.error(f"Failed to create vmss: {e}")
         raise
 
 
 @action_store.kubiya_action()
 def get_virtual_machine_scale_set(params: VMSSQueryParameters) -> Union[VirtualMachineSSResponseModel, dict]:
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
 
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmssName}"
-    api_version = "2023-07-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmssName}"
+        api_version = "2023-07-01"
 
-    response_data = get_wrapper(endpoint, subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, subscriptionId, api_version)
 
-    return VirtualMachineSSResponseModel(**response_data)
+        return VirtualMachineSSResponseModel(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to get vmss: {e}")
+        raise
 
 
 
 @action_store.kubiya_action()
 def list_all_virtual_machines_scale_set(params: VMSSListParameters) -> List[VirtualMachineSSListModel]:
-    endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/virtualMachinesScaleSets"
-    api_version = "2023-07-01"
+    try:
+        endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/virtualMachinesScaleSets"
+        api_version = "2023-07-01"
 
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
 
-    vmss_list = response_data.get('value', [])
-    return [VirtualMachineSSListModel(**vmss) for vmss in vmss_list]
+        vmss_list = response_data.get('value', [])
+        return [VirtualMachineSSListModel(**vmss) for vmss in vmss_list]
+    except Exception as e:
+        logger.error(f"Failed to list all vmss: {e}")
+        raise
 
 
 
@@ -176,110 +184,154 @@ def list_all_virtual_machines_scale_set(params: VMSSListParameters) -> List[Virt
 
 @action_store.kubiya_action()
 def list_all_instances_virtual_machines_scale_set(params: ListInstancesParameters) -> List[ListInstancesResponseModel]:
-    endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}providers/Microsoft.Compute/virtualMachinesScaleSets/{params.vmssName}/virtualMachines"
-    api_version = "2023-07-01"
+    try:
+        endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}providers/Microsoft.Compute/virtualMachinesScaleSets/{params.vmssName}/virtualMachines"
+        api_version = "2023-07-01"
 
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
 
-    vmss_list = response_data.get('value', [])
-    return [ListInstancesResponseModel(**vmss) for vmss in vmss_list]
+        vmss_list = response_data.get('value', [])
+        return [ListInstancesResponseModel(**vmss) for vmss in vmss_list]
+    except Exception as e:
+        logger.error(f"Failed to get all instances in vmss: {e}")
+        raise
   
 @action_store.kubiya_action()
 def deallocate_virtual_machine_scaleset(params: VMSSQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/Deallocate"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/Deallocate"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to deallocate : {e}")
+        raise
 
 @action_store.kubiya_action()
 def restart_virtual_machine_scaleset(params: VMSSQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/Restart"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/Restart"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to restart : {e}")
+        raise
 
 @action_store.kubiya_action()
 def start_virtual_machine_sccaleset(params: VMSSQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/Start"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/Start"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to start : {e}")
+        raise
 
 @action_store.kubiya_action()
 def redeploy_virtual_machine_scaleset(params: VMSSQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/redeploy"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/redeploy"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to redeploy : {e}")
+        raise
 
 @action_store.kubiya_action()
 def list_by_location_virtual_machines_scaleset(params: VMSSGetParametersByLocation) -> List[VirtualMachineSSListModel]:
-    endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/locations/{params.location}/virtualMachinesScaleSets"
-    api_version = "2023-03-01"
+    try:
+        endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/locations/{params.location}/virtualMachinesScaleSets"
+        api_version = "2023-03-01"
 
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
 
-    vm_list = response_data.get('value', [])
-    return [VirtualMachineSSListModel(**vmss) for vmss in vm_list]
+        vm_list = response_data.get('value', [])
+        return [VirtualMachineSSListModel(**vmss) for vmss in vm_list]
+    except Exception as e:
+        logger.error(f"Failed to list by location : {e}")
+        raise
 
 @action_store.kubiya_action()
 def delete_virtual_machine_scaleset(params: VMSSQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/redeploy"
-    api_version = "2023-07-01"
-    response_data = delete_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/redeploy"
+        api_version = "2023-07-01"
+        response_data = delete_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to delete vmss : {e}")
+        raise
 
 @action_store.kubiya_action()
 def instance_view_virtual_machine_scaleset(params: VMSSInstanceQueryParameters) -> Union[VirtualMachineSSResponseModel, dict] :
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/instancView"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return VirtualMachineSSResponseModel(**response_data)
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/instancView"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return VirtualMachineSSResponseModel(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to view instance : {e}")
+        raise
 
 @action_store.kubiya_action()
 def delete_instance_of_virtual_machine_scaleset(params: VMSSInstanceDeleteParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/virtualMachines/{params.instanceId}"
-    api_version = "2023-07-01"
-    response_data = delete_wrapper(endpoint, subscriptionId, api_version)
-    return VirtualMachineSSResponseModel(**response_data)
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/virtualMachines/{params.instanceId}"
+        api_version = "2023-07-01"
+        response_data = delete_wrapper(endpoint, subscriptionId, api_version)
+        return VirtualMachineSSResponseModel(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to delete a instance in vmss : {e}")
+        raise
 
 @action_store.kubiya_action()
 def power_off_virtual_machine_scale_set(params: VMSSInstanceQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/instancView"
-    api_version = "2023-07-01"
-    response_data = post_wrapper(endpoint, subscriptionId, api_version)
-    return VirtualMachineSSResponseModel(**response_data)
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/instancView"
+        api_version = "2023-07-01"
+        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        return VirtualMachineSSResponseModel(**response_data)
+    except Exception as e:
+        logger.error(f"Failed to poweroff vmss : {e}")
+        raise
 
 @action_store.kubiya_action()
 def list_sku_vmss(params: VMSSQueryParameters):
-    subscriptionId = params.subscriptionId
-    resourceGroupName = params.resourceGroupName
-    vmssName = params.vmssName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/skus"
-    api_version = "2023-07-01"
-    response_data = get_wrapper(endpoint, subscriptionId, api_version)
-    return response_data
+    try:
+        subscriptionId = params.subscriptionId
+        resourceGroupName = params.resourceGroupName
+        vmssName = params.vmssName
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachinesScaleSets/{vmssName}/skus"
+        api_version = "2023-07-01"
+        response_data = get_wrapper(endpoint, subscriptionId, api_version)
+        return response_data
+    except Exception as e:
+        logger.error(f"Failed to list  sku : {e}")
+        raise
