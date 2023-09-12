@@ -33,18 +33,19 @@ def get_wrapper(endpoint: str, subscriptionId: str, api_version: str) -> dict:
     base_url = "https://management.azure.com"
     url = f"{base_url}{endpoint}?api-version={api_version}"
     response = session.get(url)
-    if response.status_code == 200:
+    if 200 <= response.status_code < 300:
         return response.json()
     else:
         response.raise_for_status()
 
-def post_wrapper(endpoint: str, subscriptionId: str, api_version: str, data: dict = None) -> dict:
+def post_wrapper(endpoint: str, subscriptionId: str, api_version: str) -> dict:
     session = get_session()
     base_url = "https://management.azure.com"
     url = f"{base_url}{endpoint}?api-version={api_version}"
-    response = session.post(url, json=data)
-    if response.status_code == 200 or response.status_code == 201:
-        return response.json()
+    response = session.post(url)
+    if 200 <= response.status_code < 300:
+        logger.info(f"Successful POST request: {url}")
+        return response.status_code
     else:
         response.raise_for_status()
 
@@ -53,7 +54,7 @@ def put_wrapper(endpoint: str, subscriptionId: str, api_version: str, data: dict
     base_url = "https://management.azure.com"
     url = f"{base_url}{endpoint}?api-version={api_version}"
     response = session.put(url, json=data)
-    if response.status_code == 200 or response.status_code == 201:
+    if response.status_code == 200 or response.status_code == 201 or response.status_code == 202:
         logger.info(f"Successful PUT request: {url}")
         return response.json()
     else:
@@ -71,7 +72,7 @@ def delete_wrapper(endpoint: str, subscriptionId: str, api_version: str) -> dict
     response = session.delete(url)
     if 200 <= response.status_code < 300:
         logger.info(f"Successful delete request: {url}")
-        return response.json()
+        return response.status_code
     else:
         try:
             response.raise_for_status()

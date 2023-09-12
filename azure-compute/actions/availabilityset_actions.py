@@ -13,7 +13,7 @@ def create_or_update_availabilitysets(params: availabilitysetCreationParameters)
     try:
         subscriptionId = params.subscriptionId
         resourceGroupName = params.resourceGroupName
-        availabilitySetName = params.availabilitysetName
+        availabilitySetName = params.availabilitySetName
         availabilityset_data ={
                                 "location": params.location,
                                 "properties": {
@@ -21,7 +21,7 @@ def create_or_update_availabilitysets(params: availabilitysetCreationParameters)
                                     "platformUpdateDomainCount": params.update_domain
                                 }
                                 }
-        endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{availabilitySetName}"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{availabilitySetName}"
         api_version = "2023-07-01"
 
         response_data = put_wrapper(endpoint, subscriptionId, api_version, data=availabilityset_data)
@@ -38,7 +38,7 @@ def get_availabilitysets(params: availabilitysetGetParameters) -> Union[availabi
         resourceGroupName = params.resourceGroupName
         availabilitySetName = params.availabilitySetName
         api_version = "2023-07-01"
-        endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{availabilitySetName}"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{availabilitySetName}"
         response_data = get_wrapper(endpoint, subscriptionId, api_version)
         return availabilitysetResponseModel(**response_data)
     except Exception as e:
@@ -50,7 +50,7 @@ def list_azure_availabilitysets(params: availabilitysetListParameters) -> Union[
     try:
         subscriptionId = params.subscriptionId
         resourceGroupName = params.resourceGroupName
-        endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets"
         api_version = "2023-07-01"
         response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
         availabilityset_list = response_data.get('value', [])
@@ -63,7 +63,7 @@ def list_azure_availabilitysets(params: availabilitysetListParameters) -> Union[
 def list_availablesizes_availabilitysets(params: availabilitysetListAvailableSizesParameters) -> List[availabilitysetListAvailableSizesResponse]:
     try:
         #subscriptionId = params.subscriptionId
-        endpoint = f"subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{params.availabilitySetName}/vmSizes"
+        endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{params.availabilitySetName}/vmSizes"
         api_version = "2023-07-01"
         response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
         sizes_availabilityset_list = response_data.get('value', [])
@@ -73,10 +73,10 @@ def list_availablesizes_availabilitysets(params: availabilitysetListAvailableSiz
         raise
 
 @action_store.kubiya_action()
-def listall_azure_availabilitysets(params: availabilitysetListParameters) -> Union[availabilitysetListModel, dict]:
+def list_all_availabilitysets(params: availabilitysetListAllParameters) -> Union[availabilitysetListModel, dict]:
     try:
         # subscriptionId = params.subscriptionId
-        endpoint = f"subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/availabilitySets"
+        endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/availabilitySets"
         api_version = "2023-07-01"
         response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
         availabilityset_listall = response_data.get('value', [])
@@ -92,23 +92,23 @@ def delete_availabilitysets(params: availabilitysetDeletetionParameters):
         resourceGroupName = params.resourceGroupName
         availabilitySetName = params.availabilitySetName
         api_version = "2023-07-01"
-        endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{availabilitySetName}"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{availabilitySetName}"
         response_data = delete_wrapper(endpoint, subscriptionId, api_version)
         return response_data
     except Exception as e:
         logger.error(f"Failed to delete availability set: {e}")
         raise
 
-@action_store.kubiya_action()
-def update_availabilitysets(params: availabilitysetDeletetionParameters):
-    try:
-        subscriptionId = params.subscriptionId
-        resourceGroupName = params.resourceGroupName
-        availabilitySetName = params.availabilitySetName
-        api_version = "2023-07-01"
-        endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{availabilitySetName}"
-        response_data = delete_wrapper(endpoint, subscriptionId, api_version)
-        return response_data
-    except Exception as e:
-        logger.error(f"Failed to delete availability set: {e}")
-        raise
+# @action_store.kubiya_action()
+# def update_availabilitysets(params: availabilitysetDeletetionParameters):
+#     try:
+#         subscriptionId = params.subscriptionId
+#         resourceGroupName = params.resourceGroupName
+#         availabilitySetName = params.availabilitySetName
+#         api_version = "2023-07-01"
+#         endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/availabilitySets/{availabilitySetName}"
+#         response_data = delete_wrapper(endpoint, subscriptionId, api_version)
+#         return response_data
+#     except Exception as e:
+#         logger.error(f"Failed to delete availability set: {e}")
+#         raise

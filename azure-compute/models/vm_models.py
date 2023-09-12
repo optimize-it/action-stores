@@ -6,25 +6,35 @@ class VMCreationParameters(BaseModel):
     subscriptionId: str
     resourceGroupName: str
     vmName: str
-    networkInterfaceName: str
-    location: str
-    vmSize: str
-    computer_name: str
+    networkInterfaceName: str 
+    location: str = "eastus"
+    vmSize: str = "Standard_DS2_v2"
     admin_username: str
     admin_password: str
-    publisher: str
-    offer: str
-    sku: str
-    version: str
+    publisher: str = "Canonical"
+    offer: str = "UbuntuServer"
+    sku: str = "18.04-LTS"
 
+class ListOffer(BaseModel):
+    location: str
+    subscriptionId: str
+    publisherName: str
+
+# class PublisherResponseModel(BaseModel):
+#     name: str
+#     location: str
+#     tags: Optional[dict]
+#     id: str
+#     extendedlocation: Optional[dict]
 
 class VirtualMachineResponseModel(BaseModel):
     name: Optional[str]
     id: Optional[str]
     type: Optional[str]
     location: Optional[str]
+    type: Optional[str]
     tags: Optional[dict]
-    properties: dict
+    properties: Optional[dict]
 
 
 class VMQueryParameters(BaseModel):
@@ -41,6 +51,9 @@ class VirtualMachineListModel(BaseModel):
     properties: dict
     tags: Optional[dict] = {}
 
+class VMListByRgParameters(BaseModel):
+    subscriptionId: str
+    resourceGroupName: str
 
 class VMListParameters(BaseModel):
     subscriptionId: str
@@ -190,3 +203,11 @@ class VMByLocationListParameters(BaseModel):
     subscriptionId: str
     location: str
     # resourceGroupName: str
+
+class VirtualMachineAvailableSizeModel(BaseModel):
+    name: Optional[str]
+    numberOfCores: Optional[int]
+    osDiskSizeInMB: Optional[int]
+    resourceDiskSizeInMB: Optional[int]
+    memoryInMB: Optional[int]
+    maxDataDiskCount: Optional[int]

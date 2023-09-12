@@ -5,22 +5,36 @@ class VNETCreationParameters(BaseModel):
     vnetName: str
     subscriptionId: str
     resourceGroupName: str
-    # vmName: str
     location: str
-    cidr: list
-    subnet_cidr: list
+    cidr: str = "10.10.0.0/16"
+    subnet_cidr: str = "10.10.0.0/24"
+
+class VNETGetParameters(BaseModel):
+    vnetName: str
+    subscriptionId: str
+    resourceGroupName: str
+
     
 class VirtualNetworkResponseModel(BaseModel):
-    vnetName: Optional[str]
+    name: Optional[str]
+    id: Optional[str]
+    type: Optional[str]
     location: Optional[str]
-    properties: dict
+    properties: Optional[dict]
     
 class VnetListParameters(BaseModel):
-    vnetName: str
+    subscriptionId: str
+
+class VnetListByRGParameters(BaseModel):
+    subscriptionId: str
+    resourceGroupName: str
 
 class VnetListModel(BaseModel):
-    vnetName: Optional[str]
+    name: Optional[str]
+    id: Optional[str]
+    type: Optional[str]
     location: Optional[str]
+    properties: Optional[dict]
     
 class VnetDeleteParameters(BaseModel):
     vnetName: str
@@ -34,7 +48,9 @@ class VnetTagsUpdateParameters(BaseModel):
     tags: dict = {}
 
 class VnetTagsUpdateResponse(BaseModel):
-    vnetName: str
-    resourceGroupName: str
-    subscriptionId: str
+    name: Optional[str]
+    id: Optional[str]
+    type: Optional[str]
+    location: Optional[str]
     tags: Optional[dict] = {}
+    properties: Optional[dict] = {}

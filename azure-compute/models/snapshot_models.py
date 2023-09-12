@@ -9,12 +9,9 @@ class SnapshotCreationParameters(BaseModel):
     location: str
     
 class SnapshotResponseModel(BaseModel):
-    id: Optional[str]
-    type: Optional[str]
     name: Optional[str]
     location: Optional[str]
-    tags: Optional[dict] = {}
-    properties: dict
+    properties: Optional[dict]
 
 class SnapshotGetParameters(BaseModel):
     snapshotName: str
@@ -29,16 +26,17 @@ class SnapshotGetResponseModel(BaseModel):
     properties: dict
 
 class SnapshotListParameters(BaseModel):
-    subscribtionId: str
+    subscriptionId: str
 
 class SnapshotListByRGParameters(BaseModel):
-    subscriptionId: Optional[str]
-    resourceGroupName: Optional[str]
+    subscriptionId: str
+    resourceGroupName: str
     
 class SnapshotListModel(BaseModel):
-    SnapshotName: Optional[str]
+    name: Optional[str]
     location: Optional[str]
     id: Optional[str]
+    type: Optional[str]
     properties: dict
     tags: Optional[dict] = {}
 

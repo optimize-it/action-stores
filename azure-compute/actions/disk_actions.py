@@ -23,25 +23,26 @@ def create_or_update_disks(params: DiskCreationParameters) -> Union[DiskResponse
                         "diskSizeGB": params.diskSizeGB
                     }
                     }
-        endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/disks/{diskName}"
-        api_version = "2023-03-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/disks/{diskName}"
+        api_version = "2021-12-01"
 
         response_data = put_wrapper(endpoint, subscriptionId, api_version, data=disk_data)
 
         return DiskResponseModel(**response_data)
+        # return response_data
     except Exception as e:
         logger.error(f"Failed to create disk: {e}")
         raise
 
 
 @action_store.kubiya_action()
-def get_disks(params: DiskCreationParameters) -> Union[DiskResponseModel, dict]:
+def get_disks(params: DiskGetParameters) -> Union[DiskResponseModel, dict]:
     try:
         subscriptionId = params.subscriptionId
         resourceGroupName = params.resourceGroupName
-        diskName = params.vnetName
-        api_version = ""
-        endpoint = f"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/disks/{diskName}"
+        diskName = params.diskName
+        api_version = "2021-12-01"
+        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/disks/{diskName}"
         response_data = get_wrapper(endpoint, subscriptionId, api_version)
         return DiskResponseModel(**response_data)
     except Exception as e:
@@ -50,11 +51,11 @@ def get_disks(params: DiskCreationParameters) -> Union[DiskResponseModel, dict]:
 
 
 @action_store.kubiya_action()
-def listall_azure_disks(params: DiskListParameters) -> Union[DiskListModel, dict]:
+def listall_azure_disks(params: DiskListParameters) -> List[DiskListModel]:
     try:
         #subscriptionId = params.subscriptionId
-        endpoint = f"subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/disks"
-        api_version = "2022-11-01"
+        endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/disks"
+        api_version = "2021-12-01"
         response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
         disk_list = response_data.get('value', [])
         return [DiskListModel(**disk) for disk in disk_list]
@@ -63,11 +64,11 @@ def listall_azure_disks(params: DiskListParameters) -> Union[DiskListModel, dict
         raise
 
 @action_store.kubiya_action()
-def list_by_rg_azure_disks(params: DiskListParameters) -> Union[DiskListModel, dict]:
+def list_by_rg_azure_disks(params: DiskListByRGParameters) -> List[DiskListModel]:
     try:
         #subscriptionId = params.subscriptionId
-        endpoint = f"subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/disks"
-        api_version = "2022-11-01"
+        endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/disks"
+        api_version = "2021-12-01"
         response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
         disk_list = response_data.get('value', [])
         return [DiskListModel(**disk) for disk in disk_list]
@@ -79,7 +80,7 @@ def list_by_rg_azure_disks(params: DiskListParameters) -> Union[DiskListModel, d
 def delete_azure_disks(params: DiskDeleteParameters):
     try:
         #subscriptionId = params.subscriptionId
-        endpoint = f"subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/disks/{params.diskName}"
+        endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/disks/{params.diskName}"
         api_version = "2021-12-01"
         response_data = delete_wrapper(endpoint, params.subscriptionId, api_version)
         return response_data

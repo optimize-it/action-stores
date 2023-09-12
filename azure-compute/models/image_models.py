@@ -20,10 +20,10 @@ class ImageModel(BaseModel):
     name: Optional[str]
     location: Optional[str]
     tags: Optional[dict] = {}
-    properties: dict
+    properties: Optional[dict]
     
 class ImageListParameters(BaseModel):
-    subscribtionId: str
+    subscriptionId: str
     
 class ImageListModel(BaseModel):
     imageName: str

@@ -6,24 +6,35 @@ class DiskCreationParameters(BaseModel):
     subscriptionId: str
     resourceGroupName: str
     location: str
+    diskSizeGB: int
     
 class DiskResponseModel(BaseModel):
-    id: str
-    type: str
-    name: str
-    location: str
-    tags: Optional[dict] = {}
+    name: Optional[str]
+    id: Optional[str]
+    location: Optional[str]
+    type: Optional[str]
     properties: dict
+
+class DiskGetParameters(BaseModel):
+    diskName: str
+    subscriptionId: str
+    resourceGroupName: str
     
 class DiskListParameters(BaseModel):
-    subscribtionId: Optional[str]
+    subscriptionId: str
+
+class DiskListByRGParameters(BaseModel):
+    subscriptionId: str
+    resourceGroupName: str
     
 class DiskListModel(BaseModel):
-    diskName: str
+    name: str
     location: str
+    type: str
     id: str
     properties: dict
     tags: Optional[dict] = {}
+
     
 class DiskDeleteParameters(BaseModel):
     diskName: str

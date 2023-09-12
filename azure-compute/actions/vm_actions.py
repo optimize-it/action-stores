@@ -20,7 +20,7 @@ def create_or_update_virtual_machine(params: VMCreationParameters) -> Union[Virt
             "properties": {
                 "hardwareProfile": {"vmSize": params.vmSize},
                 "osProfile": {
-                    "computerName": params.computer_name,
+                    "computerName": "azureuser",
                     "adminUsername": params.admin_username,
                     "adminPassword": params.admin_password,
                 },
@@ -29,7 +29,7 @@ def create_or_update_virtual_machine(params: VMCreationParameters) -> Union[Virt
                         "publisher": params.publisher,
                         "offer": params.offer,
                         "sku": params.sku,
-                        "version": params.version,
+                        "version": "Latest",
                     },
                 },
                 "networkProfile": {
@@ -49,7 +49,7 @@ def create_or_update_virtual_machine(params: VMCreationParameters) -> Union[Virt
         api_version = "2023-03-01"
 
         response_data = put_wrapper(endpoint, subscriptionId, api_version, data=vm_data)
-
+        
         return VirtualMachineResponseModel(**response_data)
     except Exception as e:
         logger.error(f"Failed to create virtual machine : {e}")
@@ -205,7 +205,7 @@ def delete_virtual_machine(params: VMQueryParameters):
         api_version = "2023-07-01"
 
         response_data = delete_wrapper(endpoint, subscriptionId, api_version)
-
+        print(response_data)
         return response_data
     except Exception as e:
         logger.error(f"Failed to delete VM : {e}")
@@ -222,7 +222,7 @@ def poweroff_virtual_machine(params: VMQueryParameters):
         api_version = "2023-07-01"
 
         response_data = post_wrapper(endpoint, subscriptionId, api_version)
-
+        logger.info(f"response is {response_data}")
         return response_data
     except Exception as e:
         logger.error(f"Failed to poweroff VM : {e}")
@@ -284,7 +284,7 @@ def instance_view_virtual_machine(params: VMQueryParameters):
         vmName = params.vmName
         endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/instanceView"
         api_version = "2023-07-01"
-        response_data = post_wrapper(endpoint, subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, subscriptionId, api_version)
         return response_data
     except Exception as e:
         logger.error(f"Failed to view instance: {e}")
@@ -305,7 +305,7 @@ def start_virtual_machine(params: VMQueryParameters):
         raise
 
 @action_store.kubiya_action()
-def list_virtual_machine(params: VMQueryParameters) -> List[VirtualMachineResponseModel]:
+def list_by_rg_virtual_machine(params: VMListByRgParameters) -> List[VirtualMachineListModel]:
     try:
         subscriptionId = params.subscriptionId
         resourceGroupName = params.resourceGroupName
@@ -330,4 +330,30 @@ def list_by_location_virtual_machine(params: VMByLocationListParameters) -> List
         return [VirtualMachineListModel(**vm) for vm in vm_list]
     except Exception as e:
         logger.error(f"Failed to list VMs : {e}")
+        raise
+
+@action_store.kubiya_action()
+def get_available_sizes_for_virtual_machine(params: VMQueryParameters) -> List[VirtualMachineAvailableSizeModel]:
+    try:
+        subscriptionId = params.subscriptionId
+        # resourceGroupName = params.resourceGroupName
+        endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{params.vmName}/vmSizes"
+        api_version = "2023-07-01"
+        response_data = get_wrapper(endpoint, subscriptionId, api_version)
+        size_list = response_data.get('value', [])
+        return [VirtualMachineAvailableSizeModel(**size) for size in size_list]
+    except Exception as e:
+        logger.error(f"Failed to list VMs : {e}")
+        raise
+
+@action_store.kubiya_action()
+def list_virtual_machine_offer(params: ListOffer):
+    try:
+        # subscriptionId = params.subscriptionId
+        endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/locations/{params.location}/publishers/{params.publisherName}/artifacttypes/vmimage/offers"
+        api_version = "2023-07-01"
+        response_data = get_wrapper(endpoint, "", api_version)
+        return  response_data
+    except Exception as e:
+        logger.error(f"Failed to list offer for VMs : {e}")
         raise

@@ -5,10 +5,10 @@ from typing import Optional, List
 class VMSSCreationParameters(BaseModel):
     subscriptionId: str
     resourceGroupName: str
-    vmName: str
+    vmssName: str
     networkInterfaceName: str
     location: str
-    vmSize: str
+    vmssSize: str
     computer_name: str
     admin_username: str
     admin_password: str
@@ -19,12 +19,13 @@ class VMSSCreationParameters(BaseModel):
 
 
 class VirtualMachineSSResponseModel(BaseModel):
+    sku: Optional[dict]
     name: Optional[str]
     id: Optional[str]
     type: Optional[str]
     location: Optional[str]
-    tags: Optional[dict]
-    properties: dict
+    tags: Optional[dict] = {}
+    properties: Optional[dict]
 
 
 class VMSSQueryParameters(BaseModel):
@@ -34,12 +35,13 @@ class VMSSQueryParameters(BaseModel):
 
 
 class VirtualMachineSSListModel(BaseModel):
-    id: str
-    name: str
-    type: str
-    location: str
-    properties: dict
+    sku: Optional[dict]
+    name: Optional[str]
+    id: Optional[str]
+    type: Optional[str]
+    location: Optional[str]
     tags: Optional[dict] = {}
+    properties: Optional[dict]
 
 
 class VMSSListParameters(BaseModel):
@@ -55,7 +57,6 @@ class VMSSDeleteInstance(BaseModel):
     subscriptionId: str
     resourceGroupName: str
     vmssName: str
-    instanceIds: list
 
 class ListInstancesParameters(BaseModel):
     subscriptionId: str
@@ -67,12 +68,13 @@ class ListInstancesResponseModel(BaseModel):
     id: Optional[str]
     type: Optional[str]
     location: Optional[str]
+    properties: Optional[dict]
+    tags: Optional[dict]
 
 class VMSSInstanceQueryParameters(BaseModel):
     subscriptionId: str
     resourceGroupName: str
     vmssName: str
-    instanceId: str
 
 class VMSSInstanceDeleteParameters(BaseModel):
     subscriptionId: str
@@ -84,3 +86,10 @@ class vmssAvailableSkus(BaseModel):
     subscriptionId: str
     resourceGroupName: str
     vmssName: str
+
+
+class VirtualMachineScaleSetInstanceViewResponseModel(BaseModel):
+    extensions: Optional[dict]
+    statuses: Optional[dict]
+    orchestrationServices: Optional[dict]
+    virtualMachine: Optional[dict]

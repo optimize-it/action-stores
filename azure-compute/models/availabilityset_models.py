@@ -7,6 +7,7 @@ class availabilitysetCreationParameters(BaseModel):
     subscriptionId: str
     update_domain: int
     fault_domain: int
+    location: str
 
 class availabilitysetGetParameters(BaseModel):
     availabilitySetName: str
@@ -14,18 +15,27 @@ class availabilitysetGetParameters(BaseModel):
     subscriptionId: str
     
 class availabilitysetResponseModel(BaseModel):
-    availabilitySetName: Optional[str]
-    resourceGroupName: Optional[str]
+    name: Optional[str]
+    type: Optional[str]
+    id: Optional[str]
+    sku: Optional[dict]
     location: Optional[str]
-    subscriptionId: Optional[str]
+    properties: Optional[dict]
     
 class availabilitysetListParameters(BaseModel):
     resourceGroupName: Optional[str]
     subscriptionId: Optional[str]
     
-class availabilitysetListModel(BaseModel):
-    resourceGroupName: Optional[str]
+class availabilitysetListAllParameters(BaseModel):
     subscriptionId: Optional[str]
+
+class availabilitysetListModel(BaseModel):
+    name: Optional[str]
+    type: Optional[str]
+    id: Optional[str]
+    sku: Optional[dict]
+    location: Optional[str]
+    properties: Optional[dict]
     
 class availabilitysetListAvailableSizesParameters(BaseModel):
     availabilitySetName: str
