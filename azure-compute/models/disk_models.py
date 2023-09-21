@@ -1,11 +1,13 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Literal
+
+Regions = Literal["eastus", "eastus2", "westus", "northeurope", "westindia", "southindia"]
 
 class DiskCreationParameters(BaseModel):
     diskName: str
-    subscriptionId: str
+    
     resourceGroupName: str
-    location: str
+    location: Regions
     diskSizeGB: int
     
 class DiskResponseModel(BaseModel):
@@ -17,14 +19,14 @@ class DiskResponseModel(BaseModel):
 
 class DiskGetParameters(BaseModel):
     diskName: str
-    subscriptionId: str
+    
     resourceGroupName: str
     
 class DiskListParameters(BaseModel):
-    subscriptionId: str
+    None
 
 class DiskListByRGParameters(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     
 class DiskListModel(BaseModel):
@@ -38,5 +40,5 @@ class DiskListModel(BaseModel):
     
 class DiskDeleteParameters(BaseModel):
     diskName: str
-    subscriptionId: str
+    
     resourceGroupName: str

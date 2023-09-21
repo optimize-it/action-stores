@@ -1,21 +1,22 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Literal
 
+Regions = Literal["eastus", "eastus2", "westus", "northeurope", "westindia", "southindia"]
+Sizes = Literal["Standard_DS2_v2", "Standard_D2s_v4","Standard_D4s_v4","Standard_B2s_v2"]
 
 class VMSSCreationParameters(BaseModel):
-    subscriptionId: str
     resourceGroupName: str
     vmssName: str
-    networkInterfaceName: str
-    location: str
-    vmssSize: str
-    computer_name: str
+    #networkInterfaceName: str
+    location: Regions
+    vmssSize: Sizes
     admin_username: str
     admin_password: str
-    publisher: str
-    offer: str
-    sku: str
-    version: str
+    publisher: str = "Canonical"
+    offer: str = "UbuntuServer"
+    sku: str = "18.04-LTS"
+    vnetName: str = "default"
+    subnetName: str = "default-subnet"
 
 
 class VirtualMachineSSResponseModel(BaseModel):
@@ -29,7 +30,7 @@ class VirtualMachineSSResponseModel(BaseModel):
 
 
 class VMSSQueryParameters(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     vmssName: str
 
@@ -45,21 +46,21 @@ class VirtualMachineSSListModel(BaseModel):
 
 
 class VMSSListParameters(BaseModel):
-    subscriptionId: str
+    None
 
 class VMSSGetParametersByLocation(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     vmssName: str
     location: str
 
 class VMSSDeleteInstance(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     vmssName: str
 
 class ListInstancesParameters(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     vmssName: str
 
@@ -72,18 +73,18 @@ class ListInstancesResponseModel(BaseModel):
     tags: Optional[dict]
 
 class VMSSInstanceQueryParameters(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     vmssName: str
 
 class VMSSInstanceDeleteParameters(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     vmssName: str
     instanceId: str
 
 class vmssAvailableSkus(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     vmssName: str
 

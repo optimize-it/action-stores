@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def create_or_update_azure_image(params: ImageCreationParameters) -> Union[ImageModel, dict]:
     try:
         imageName = params.imageName
-        subscriptionId = params.subscriptionId
+        subscriptionId = get_subscription_id_secret()
         resourceGroupName = params.resourceGroupName
         imageName = params.vmName
         image_data = {
@@ -28,16 +28,16 @@ def create_or_update_azure_image(params: ImageCreationParameters) -> Union[Image
                                                         }
                     }
                     }}
-        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}"
+        endpoint = f"/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}"
         api_version = "2023-07-01"
-        response_data = put_wrapper(endpoint, subscriptionId, api_version, data=image_data)
+        response_data = put_wrapper(endpoint, api_version, data=image_data)
         if response_data.get('id') != None:
             return ImageModel(**response_data)
         else:
             logger.error(f"returned values: {response_data}")
     except Exception as e:
         logger.error(f"Failed to get image: {e}")
-        raise
+        return {"error": str(e)}
 
 @action_store.kubiya_action()
 def get_azure_images(params: ImageGetParameters) -> Union[ImageModel, dict]:
@@ -45,44 +45,44 @@ def get_azure_images(params: ImageGetParameters) -> Union[ImageModel, dict]:
         subscriptionId = params.subscriptionId
         resourceGroupName = params.resourceGroupName
         imageName = params.imageName
-        endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}"
+        endpoint = f"/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}"
         api_version = "2023-07-01"
 
-        response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+        response_data = get_wrapper(endpoint, api_version)
 
         return ImageModel(**response_data)
     except Exception as e:
         logger.error(f"Failed to get image: {e}")
-        raise
+        return {"error": str(e)}
 
 @action_store.kubiya_action()
 def listall_azure_images(params: ImageListParameters) -> Union[ImageListModel, dict]:
     #subscriptionId = params.subscriptionId
-    endpoint = f"/subscriptions/{params.subscriptionId}/providers/Microsoft.Compute/images"
+    endpoint = f"/providers/Microsoft.Compute/images"
     api_version = "2023-07-01"
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+    response_data = get_wrapper(endpoint, api_version)
     image_list = response_data.get('value', [])
     return [ImageListModel(**image) for image in image_list]
 
 @action_store.kubiya_action()
 def list_by_rg_azure_images(params: ImageListParameters) -> Union[ImageListModel, dict]:
     #subscriptionId = params.subscriptionId
-    endpoint = f"/subscriptions/{params.subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/images"
+    endpoint = f"/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Compute/images"
     api_version = "2023-07-01"
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+    response_data = get_wrapper(endpoint, api_version)
     image_list = response_data.get('value', [])
     return [ImageListModel(**image) for image in image_list]
 
 
 @action_store.kubiya_action()
 def delete_azure_images(params: ImageDeletetionParameters):
-    subscriptionId = params.subscriptionId
+    # subscriptionId = params.subscriptionId
     resourceGroupName = params.resourceGroupName
     imageName = params.imageName
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}"
+    endpoint = f"/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}"
     api_version = "2023-07-01"
 
-    response_data = get_wrapper(endpoint, params.subscriptionId, api_version)
+    response_data = get_wrapper(endpoint, api_version)
 
     return response_data
     

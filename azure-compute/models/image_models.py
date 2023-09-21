@@ -1,17 +1,20 @@
 from argparse import OPTIONAL
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Literal
+
+
+Regions = Literal["eastus", "eastus2", "westus", "northeurope", "westindia", "southindia"]
 
 class ImageCreationParameters(BaseModel):
     imageName: str
-    subscriptionId: str
+    
     resourceGroupName: str
     vmName: str
-    location: str
+    location: Regions
 
 class ImageGetParameters(BaseModel):
     imageName: str
-    subscriptionId: str
+    
     resourceGroupName: str
     
 class ImageModel(BaseModel):
@@ -23,7 +26,7 @@ class ImageModel(BaseModel):
     properties: Optional[dict]
     
 class ImageListParameters(BaseModel):
-    subscriptionId: str
+    None
     
 class ImageListModel(BaseModel):
     imageName: str
@@ -34,5 +37,5 @@ class ImageListModel(BaseModel):
     
 class ImageDeletetionParameters(BaseModel):
     imageName: str
-    subscriptionId: str
+    
     resourceGroupName: str

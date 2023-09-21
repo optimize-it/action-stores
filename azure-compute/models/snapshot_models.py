@@ -1,12 +1,15 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Literal
+
+Regions = Literal["eastus", "eastus2", "westus", "northeurope", "westindia", "southindia"]
+
 
 class SnapshotCreationParameters(BaseModel):
     snapshotName: str
-    subscriptionId: str
+    
     resourceGroupName: str
     diskName: str
-    location: str
+    location: Regions
     
 class SnapshotResponseModel(BaseModel):
     name: Optional[str]
@@ -15,7 +18,7 @@ class SnapshotResponseModel(BaseModel):
 
 class SnapshotGetParameters(BaseModel):
     snapshotName: str
-    subscriptionId: str
+    
     resourceGroupName: str
 
 class SnapshotGetResponseModel(BaseModel):
@@ -26,10 +29,10 @@ class SnapshotGetResponseModel(BaseModel):
     properties: dict
 
 class SnapshotListParameters(BaseModel):
-    subscriptionId: str
+    None
 
 class SnapshotListByRGParameters(BaseModel):
-    subscriptionId: str
+    
     resourceGroupName: str
     
 class SnapshotListModel(BaseModel):
@@ -42,6 +45,6 @@ class SnapshotListModel(BaseModel):
 
 class SnapshotDeleteParameters(BaseModel):
     snapshotName: str
-    subscriptionId: str
+    
     resourceGroupName: str
     

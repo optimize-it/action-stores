@@ -1,14 +1,15 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List , Literal
 
-
+Sizes = Literal["Standard_DS2_v2", "Standard_D2s_v4","Standard_D4s_v4","Standard_B2s_v2"]
+Regions = Literal["eastus", "eastus2", "westus", "northeurope", "westindia", "southindia"]
 class VMCreationParameters(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     resourceGroupName: str
     vmName: str
     networkInterfaceName: str 
-    location: str = "eastus"
-    vmSize: str = "Standard_DS2_v2"
+    location: Regions
+    vmSize : Sizes
     admin_username: str
     admin_password: str
     publisher: str = "Canonical"
@@ -17,7 +18,7 @@ class VMCreationParameters(BaseModel):
 
 class ListOffer(BaseModel):
     location: str
-    subscriptionId: str
+    # subscriptionId: str
     publisherName: str
 
 # class PublisherResponseModel(BaseModel):
@@ -38,7 +39,7 @@ class VirtualMachineResponseModel(BaseModel):
 
 
 class VMQueryParameters(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     resourceGroupName: str
     vmName: str
 
@@ -52,11 +53,12 @@ class VirtualMachineListModel(BaseModel):
     tags: Optional[dict] = {}
 
 class VMListByRgParameters(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     resourceGroupName: str
 
 class VMListParameters(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
+    None
 
 
 class ManagedByTenant(BaseModel):
@@ -111,7 +113,8 @@ class ResourceGroupListResult(BaseModel):
 
 
 class RGQueryParameters(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
+    None
 
 
 class PublicIPAddress(BaseModel):
@@ -159,27 +162,28 @@ class NetworkInterfaceListResult(BaseModel):
 
 
 class NetworkInterfaceParams(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     resourceGroupName: str
 
 
 class PublisherParams(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     location: str
 
 
 class LocationParams(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
+    None
 
 
 class OfferParams(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     location: str
     publisherName: str
 
 
 class VersionsParams(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     location: str
     publisherName: str
     offer: str
@@ -187,20 +191,20 @@ class VersionsParams(BaseModel):
 
 
 class SkusParams(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     location: str
     publisherName: str
     offer: str
 
 
 class MachineSizesParams(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     location: str
 
 
 
 class VMByLocationListParameters(BaseModel):
-    subscriptionId: str
+    # subscriptionId: str
     location: str
     # resourceGroupName: str
 

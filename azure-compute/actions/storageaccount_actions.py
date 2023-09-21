@@ -10,27 +10,76 @@ logger = logging.getLogger(__name__)
 
 @action_store.kubiya_action()
 def create_azure_storage_account(params: StorageAccountCreationParameters) -> Union[StorageAccountResponseModel, dict]:
-    subscriptionId = params.subscriptionId
+    subscriptionId = get_subscription_id_secret()
     resourceGroupName = params.resourceGroupName
-    storageAccountName = params.vnetName
-    storage_data = {
-                "kind": params.kind,
-                "location": params.location,
-                "sku": params.sku
-}
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{storageAccountName}"
-    api_version = "2023-03-01"
+    storageAccountName = params.storageAccountName
+    storage_data =  {
+                        "sku": {
+                            "name": params.sku
+                        },
+                        "kind": params.kind,
+                        "location": params.location,
+                        # "extendedLocation": {
+                        #     "type": "EdgeZone",
+                        #     "name": "losangeles001"
+                        # },
+                        "properties": {
+                            "keyPolicy": {
+                            "keyExpirationPeriodInDays": 20
+                            },
+                            "sasPolicy": {
+                            "sasExpirationPeriod": "1.15:59:59",
+                            "expirationAction": "Log"
+                            },
+                            # "isHnsEnabled": True,
+                            # "isSftpEnabled": True,
+                            "allowBlobPublicAccess": False,
+                            "defaultToOAuthAuthentication": False,
+                            "minimumTlsVersion": "TLS1_2",
+                            "allowSharedKeyAccess": True,
+                            # "routingPreference": {
+                            # "routingChoice": "MicrosoftRouting",
+                            # "publishMicrosoftEndpoints": True,
+                            # "publishInternetEndpoints": True
+                            # },
+                            "encryption": {
+                            "services": {
+                                "file": {
+                                "keyType": "Account",
+                                "enabled": True
+                                },
+                                "blob": {
+                                "keyType": "Account",
+                                "enabled": True
+                                }
+                            },
+                            "requireInfrastructureEncryption": False,
+                            "keySource": "Microsoft.Storage"
+                            }
+                        }
+                        }
+    endpoint = f"/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{storageAccountName}"
+    api_version = "2023-01-01"
 
-    response_data = put_wrapper(endpoint, subscriptionId, api_version, data=storage_data)
+    response_data = put_wrapper(endpoint, api_version, data=storage_data)
 
-    return StorageAccountResponseModel(**response_data)
+    return response_data
 
 @action_store.kubiya_action()
 def list_storage_skus(params: StorageSkuParametes):
-    subscriptionId = params.subscriptionId
-    endpoint = f"/subscriptions/{subscriptionId}/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{params.storageAccountName}"
-    api_version = "2023-03-01"
+    # subscriptionId = params.subscriptionId
+    endpoint = f"/providers/Microsoft.Storage/skus"
+    api_version = "2023-01-01"
 
-    response_data = get_wrapper(endpoint, subscriptionId, api_version)
+    response_data = get_wrapper(endpoint, api_version)
 
     return response_data
+
+@action_store.kubiya_action()
+def list_all_storage_accounts(params: ListStorageParametes) -> List[ListStorageResponseModel]:
+    endpoint = "/providers/Microsoft.Storage/storageAccounts"
+    api_version = "2023-01-01"
+    response_data = get_wrapper(endpoint, api_version)
+    storage_list = response_data.get('value', [])
+    return [ListStorageResponseModel(**storageaccount) for storageaccount in storage_list]
+     

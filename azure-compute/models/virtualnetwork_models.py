@@ -1,17 +1,18 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Literal
+
+Regions = Literal["eastus", "eastus2", "westus", "northeurope", "westindia", "southindia"]
+
 
 class VNETCreationParameters(BaseModel):
     vnetName: str
-    subscriptionId: str
     resourceGroupName: str
-    location: str
+    location: Regions
     cidr: str = "10.10.0.0/16"
     subnet_cidr: str = "10.10.0.0/24"
 
 class VNETGetParameters(BaseModel):
     vnetName: str
-    subscriptionId: str
     resourceGroupName: str
 
     
@@ -23,10 +24,9 @@ class VirtualNetworkResponseModel(BaseModel):
     properties: Optional[dict]
     
 class VnetListParameters(BaseModel):
-    subscriptionId: str
+    None
 
 class VnetListByRGParameters(BaseModel):
-    subscriptionId: str
     resourceGroupName: str
 
 class VnetListModel(BaseModel):
@@ -39,12 +39,12 @@ class VnetListModel(BaseModel):
 class VnetDeleteParameters(BaseModel):
     vnetName: str
     resourceGroupName: str
-    subscriptionId: str
+    # subscriptionId: str
 
 class VnetTagsUpdateParameters(BaseModel):
     vnetName: str
     resourceGroupName: str
-    subscriptionId: str
+    # subscriptionId: str
     tags: dict = {}
 
 class VnetTagsUpdateResponse(BaseModel):

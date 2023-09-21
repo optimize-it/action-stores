@@ -1,18 +1,20 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Literal
+
+Regions = Literal["eastus", "eastus2", "westus", "northeurope", "westindia", "southindia"]
 
 class availabilitysetCreationParameters(BaseModel):
     availabilitySetName: str
     resourceGroupName: str
-    subscriptionId: str
+    
     update_domain: int
     fault_domain: int
-    location: str
+    location: Regions
 
 class availabilitysetGetParameters(BaseModel):
     availabilitySetName: str
     resourceGroupName: str
-    subscriptionId: str
+    
     
 class availabilitysetResponseModel(BaseModel):
     name: Optional[str]
@@ -40,7 +42,7 @@ class availabilitysetListModel(BaseModel):
 class availabilitysetListAvailableSizesParameters(BaseModel):
     availabilitySetName: str
     resourceGroupName: str
-    subscriptionId: str
+    
     
 class availabilitysetListAvailableSizesResponse(BaseModel):
     name: Optional[str]
@@ -53,5 +55,5 @@ class availabilitysetListAvailableSizesResponse(BaseModel):
 class availabilitysetDeletetionParameters(BaseModel):
     availabilitySetName: str
     resourceGroupName: str
-    subscriptionId: str
+    
     
