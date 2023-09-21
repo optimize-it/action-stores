@@ -6,9 +6,9 @@ class NetworkInterfaceCreationParameters(BaseModel):
     subscriptionId: str
     resourceGroupName: str = "optit"
     nicName: str
-    ipName: str
-    vnetName: str
-    subnetName: str
+    # ipName: str
+    # vnetName: str
+    # subnetName: str
     location: str = "eastus"
 
 class NetworkInterfaceResponseModel(BaseModel):
@@ -20,6 +20,20 @@ class NetworkInterfaceResponseModel(BaseModel):
 
 class NetworkInterfaceListAllParameters(BaseModel):
     subscriptionId: str
+
+class PublicIpCreationParameters(BaseModel):
+    subscriptionId: str
+    resourceGroupName: str
+    ipName: str
+    location: str
+
+class PublicIpResponseModel(BaseModel):
+    name: Optional[str]
+    id: Optional[str]
+    type: Optional[str]
+    location: Optional[str]
+    properties: Optional[dict]
+    sku: Optional[dict]
 
 class NetworkInterfaceListParameters(BaseModel):
     subscriptionId: str
