@@ -1,1 +1,1 @@
-from .actions import pipeline_actions
+from .actions import project_actions

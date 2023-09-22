@@ -2,7 +2,7 @@ import logging
 
 from .. import action_store as action_store
 from ..azure_devops_wrapper import *
-# from ..models.availabilityset_models import *
+from ..models.azure_repos_git_models import *
 from typing import Union
 
 logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ def azure_repos_get_git_repository(params: GetGitReposParameters):
         logger.error(f"Failed to get azure repos: {e}")
         return {"error": str(e)}
     
-def azure_repos_get_git_repostiroty_with_parents(params: GetGitReposParametes):
+def azure_repos_get_git_repostiroty_with_parents(params: GetGitReposParameters):
     try:
         api_version = "7.1-preview.1"
         organization = params.organization
