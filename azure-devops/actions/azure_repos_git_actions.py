@@ -7,30 +7,82 @@ from typing import Union
 
 logger = logging.getLogger(__name__)
 
-def azure_repos_get_git_repository(params: GetGitReposParameters):
+@action_store.kubiya_action()
+def azure_repos_create_git_repository(params: CreateRepoParameters):
     try:
-        api_version = "7.1-preview.1"
+        api_version = "7.0"
         organization = params.organization
         project = params.project
-        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryName}"
-        response = get_wrapper_azure_devops(endpoint , api_version)
+        repo_data = {
+                        "name": params.repoName,
+                        "project": {
+                            "id": params.projectId
+                                }
+                     }
+        
+        endpoint = f"/{organization}/{project}/_apis/git/repositories"
+        response = post_wrapper_azure_devops(endpoint , api_version , data=repo_data)
         return response
     except Exception as e:
         logger.error(f"Failed to get azure repos: {e}")
         return {"error": str(e)}
     
-def azure_repos_get_git_repostiroty_with_parents(params: GetGitReposParameters):
+@action_store.kubiya_action()
+def azure_repos_delete_repository(params: DeleteRepositoryParameters):
     try:
-        api_version = "7.1-preview.1"
+        api_version = "7.0"
         organization = params.organization
         project = params.project
-        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}?includeParent=True"
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}"
+        response = delete_wrapper(endpoint, api_version)
+        return response
+    except Exception as e:
+        logger.error(f"Failed to delete azure repository: {e}")
+        return {"error": str(e)} 
+
+@action_store.kubiya_action()  
+def azure_repos_update_repository(params: UpdateRepositoryParameters):
+    try:
+        api_version = "7.0"
+        organization = params.organization
+        project = params.project
+        update_data = {
+                        "isDisabled": params.isDisabled
+                        }
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}"
+        response = patch_wrapper(endpoint, api_version, data=update_data)
+    except Exception as e:
+        logger.error(f"Failed to delete azure repository: {e}")
+        return {"error": str(e)} 
+
+
+@action_store.kubiya_action()
+def azure_repos_get_git_repository(params: GetGitReposParameters):
+    try:
+        api_version = "7.0"
+        organization = params.organization
+        project = params.project
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryIdorName}"
         response = get_wrapper_azure_devops(endpoint , api_version)
         return response
     except Exception as e:
         logger.error(f"Failed to get azure repos: {e}")
         return {"error": str(e)}
 
+@action_store.kubiya_action()   
+def azure_repos_get_git_repostiroty_with_parents(params: GetGitReposParameters):
+    try:
+        api_version = "7.1-preview.1"
+        organization = params.organization
+        project = params.project
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryIdorName}?includeParent=True"
+        response = get_wrapper_azure_devops(endpoint , api_version)
+        return response
+    except Exception as e:
+        logger.error(f"Failed to get azure repos: {e}")
+        return {"error": str(e)}
+
+@action_store.kubiya_action()
 def azure_repos_list_all_repositories(params: ListRepositoriesParameters):  
     try:
         api_version = "7.1-preview.1"
@@ -42,11 +94,19 @@ def azure_repos_list_all_repositories(params: ListRepositoriesParameters):
     except Exception as e:
         logger.error(f"Failed to list azure repos: {e}")
         return {"error": str(e)}
-    
+
+@action_store.kubiya_action()   
 def azure_repos_create_merge(params: CreateMergeParemeters):
     try:
         api_version = "7.1-preview.1"
         organization = params.organization
+        merge_data = {
+                "parents": [
+                    params.branch1,
+                    params.branch2
+                ],
+                "comment": params.comment
+                }
         project = params.project
         endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryNameOrId}/merges"
         response = post_wrapper_azure_devops(endpoint , api_version)
@@ -54,7 +114,8 @@ def azure_repos_create_merge(params: CreateMergeParemeters):
     except Exception as e:
         logger.error(f"Failed to list azure repos: {e}")
         return {"error": str(e)}
-    
+
+@action_store.kubiya_action()     
 def azure_repos_get_merge(params: GetMergeParemeters):
     try:
         api_version = "7.1-preview.1"
@@ -66,7 +127,9 @@ def azure_repos_get_merge(params: GetMergeParemeters):
     except Exception as e:
         logger.error(f"Failed to list azure repos: {e}")
         return {"error": str(e)}
+    
 
+@action_store.kubiya_action() 
 def azure_repos_get_pull_requests(params: GetPullRequestsParameters):
     try:
         api_version = "7.2-preview.1"
@@ -80,7 +143,7 @@ def azure_repos_get_pull_requests(params: GetPullRequestsParameters):
         return {"error": str(e)}
     
     
-
+@action_store.kubiya_action() 
 def azure_repos_get_pull_requests_by_id(params: GetPullRequestsByIdParameters):
     try:
         api_version = "7.2-preview.1"
@@ -93,6 +156,7 @@ def azure_repos_get_pull_requests_by_id(params: GetPullRequestsByIdParameters):
         logger.error(f"Failed to list azure repos: {e}")
         return {"error": str(e)}
     
+@action_store.kubiya_action()     
 def azure_repos_get_pull_requests_by_project(params: GetPullRequestsByProjectParameters):
     try:
         api_version = "7.2-preview.1"
@@ -104,7 +168,47 @@ def azure_repos_get_pull_requests_by_project(params: GetPullRequestsByProjectPar
     except Exception as e:
         logger.error(f"Failed to list azure repos: {e}")
         return {"error": str(e)}
-    
+
+
+@action_store.kubiya_action()     
+def azure_repos_create_pushes(params: CreatePushesParameters):
+    try:
+        api_version = "7.2-preview.1"
+        organization = params.organization
+        project = params.project
+        push_data = {
+                    "refUpdates": [
+                        {
+                        "name": "refs/heads/master",
+                        "oldObjectId": params.branchId
+                        }
+                    ],
+                    "commits": [
+                        {
+                        "comment": "Initial commit.",
+                        # "changes": [
+                        #     {
+                        #     "changeType": "add",
+                        #     "item": {
+                        #         "path": params.filenamewithlocation
+                        #     },
+                        #     "newContent": {
+                        #         "content": "My first file!",
+                        #         "contentType": "rawtext"
+                        #     }
+                        #     }
+                        # ]
+                        }
+                    ]
+                    }
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/pushes"
+        response = post_wrapper_azure_devops(endpoint , api_version, data=push_data)
+        return response
+    except Exception as e:
+        logger.error(f"Failed to list azure repos: {e}")
+        return {"error": str(e)}
+
+@action_store.kubiya_action()     
 def azure_repos_get_pushes(params: GetPushesParameters):
     try:
         api_version = "7.2-preview.1"
@@ -117,19 +221,20 @@ def azure_repos_get_pushes(params: GetPushesParameters):
         logger.error(f"Failed to list azure repos: {e}")
         return {"error": str(e)}
     
-    
+@action_store.kubiya_action()     
 def azure_repos_list_pushes(params: ListPushesParameters):
     try:
         api_version = "7.2-preview.1"
         organization = params.organization
         project = params.project
-        endpoint = f"/{organization}/{project}/_apis/git/repositories/{repositoryId}/pushes"
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/pushes"
         response = get_wrapper_azure_devops(endpoint , api_version)
         return response
     except Exception as e:
         logger.error(f"Failed to list azure repos: {e}")
         return {"error": str(e)}
 
+@action_store.kubiya_action() 
 def azure_repos_get_details_commit(params: GetCommitDetailsParameters):
     try:
         api_version = "7.2-preview.1"
@@ -141,7 +246,8 @@ def azure_repos_get_details_commit(params: GetCommitDetailsParameters):
     except Exception as e:
         logger.error(f"Failed to list azure repos: {e}")
         return {"error": str(e)}
-    
+
+@action_store.kubiya_action()     
 def azure_repos_get_changes_commit(params: ChangesCommitParameters):
     try:
         api_version = "7.2-preview.1"
@@ -155,7 +261,7 @@ def azure_repos_get_changes_commit(params: ChangesCommitParameters):
         return {"error": str(e)}
     
     
-
+@action_store.kubiya_action() 
 def azure_repos_get_commits(params: GetCommitParameters):
     try:
         api_version = "7.2-preview.1"
@@ -163,6 +269,41 @@ def azure_repos_get_commits(params: GetCommitParameters):
         project = params.project
         endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/commits"
         response = get_wrapper_azure_devops(endpoint , api_version)
+        return response
+    except Exception as e:
+        logger.error(f"Failed to get commits: {e}")
+        return {"error": str(e)}
+    
+@action_store.kubiya_action()
+def azure_repos_get_refs(params: GetCommitParameters):
+    try:
+        api_version = "7.2-preview.1"
+        organization = params.organization
+        project = params.project
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/refs"
+        response = get_wrapper_azure_devops(endpoint , api_version)
+        refs_list = response.get('value', [])
+        # availabilityset_list = response_data.get('value', [])
+        # return [availabilitysetListModel(**availabilityset) for availabilityset in availabilityset_list]
+        return [refs for refs in refs_list]
+    except Exception as e:
+        logger.error(f"Failed to get commits: {e}")
+        return {"error": str(e)}
+    
+@action_store.kubiya_action()
+def azure_repos_update_ref(params: UpdateRefParameters):
+    try:
+        api_version = "7.2-preview.1"
+        organization = params.organization
+        project = params.project
+        ref_data = {
+                "isLocked": params.isLocked
+                }
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/refs?filter={params.filter}&api-version={api_version}"
+        response = patch_wrapper(endpoint , api_version, data=ref_data)
+        # refs_list = response.get('value', [])
+        # availabilityset_list = response_data.get('value', [])
+        # return [availabilitysetListModel(**availabilityset) for availabilityset in availabilityset_list]
         return response
     except Exception as e:
         logger.error(f"Failed to get commits: {e}")

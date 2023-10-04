@@ -52,7 +52,7 @@ def get_token_for_azure_devops():
 
 def get_devops_session():
     session = Session()
-    session.headers.update({"Authorization": f"Bearer {get_token_for_azure_devops()}"})
+    session.headers.update({"Content-Type": "application/json","Authorization": f"Bearer {get_token_for_azure_devops()}",})
     return session
 
 def get_wrapper_azure_devops(endpoint: str, api_version: str) -> dict:
@@ -65,14 +65,25 @@ def get_wrapper_azure_devops(endpoint: str, api_version: str) -> dict:
     else:
         response.raise_for_status()
 
-def post_wrapper_azure_devops(endpoint: str, api_version: str) -> dict:
+def head_wrapper(endpoint: str, api_version: str) -> dict:
     session = get_devops_session()
     base_url = f"https://dev.azure.com"
     url = f"{base_url}{endpoint}?api-version={api_version}"
-    response = session.post(url)
+    response = session.head(url)
     if 200 <= response.status_code < 300:
         return response.json()
     else:
+        response.raise_for_status()
+
+def post_wrapper_azure_devops(endpoint: str, api_version: str, data: dict = None) -> dict:
+    session = get_devops_session()
+    base_url = f"https://dev.azure.com"
+    url = f"{base_url}{endpoint}?api-version={api_version}"
+    response = session.post(url,json=data)
+    if 200 <= response.status_code < 300:
+        print(response.json())
+        return response.json()
+    else:   
         response.raise_for_status()
 
 # def delete_wrapper_azure_devops(endpoint: str, api_version: str) -> dict:
@@ -86,7 +97,7 @@ def delete_wrapper(endpoint: str, api_version: str) -> dict:
     response = session.delete(url)
     if 200 <= response.status_code < 300:
         logger.info(f"Successful delete request: {url}")
-        return response.status_code
+        return {"successfully accepted with status code:" : response.status_code}
     else:
         try:
             response.raise_for_status()
@@ -94,3 +105,32 @@ def delete_wrapper(endpoint: str, api_version: str) -> dict:
             logger.error(f"DELETE request failed with status {response.status_code} for URL: {url}")
             logger.error(f"Error response: {response.text}")
             return {"error": str(err)}
+
+
+def patch_wrapper(endpoint: str, data: dict = None) -> dict:
+    session = get_devops_session()
+    # subscriptionId = get_subscription_id_secret()
+    base_url = f"https://dev.azure.com"
+    url = f"{base_url}{endpoint}"
+    response = session.delete(url,json=data)
+    if 200 <= response.status_code < 300:
+        logger.info(f"Successful PATCH request: {url}")
+        return response.status_code
+    else:
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            logger.error(f"PATCH request failed with status {response.status_code} for URL: {url}")
+            logger.error(f"Error response: {response.text}")
+            return {"error": str(err)}
+        
+def put_wrapper_azure_devops(endpoint: str, api_version: str, data: dict = None) -> dict:
+    session = get_devops_session()
+    base_url = f"https://dev.azure.com"
+    url = f"{base_url}{endpoint}?api-version={api_version}"
+    response = session.put(url,json=data)
+    if 200 <= response.status_code < 300:
+        print(response.json())
+        return response.json()
+    else:   
+        response.raise_for_status()

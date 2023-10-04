@@ -10,4 +10,4 @@ action_store = ActionStore("azure-devops", "0.1.0")
 
 action_store.uses_secrets(["AZURE_CLIENT_SECRET", "AZURE_CLIENT_ID", "AZURE_TENANT_ID", "AZURE_SUBSCRIPTION_ID"])
 
-logger.info("Connected to Azure Compute API")
+logger.info("Connected to Azure DevOps API")
