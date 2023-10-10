@@ -91,3 +91,8 @@ class UpdateRefParameters(BaseModel):
     project: str
     filer: str = "heads/master"
     isLocked: bool = False
+
+class UpdateRefsParameters(BaseModel):
+    repositoryId: str
+    organization: str
+    project: str

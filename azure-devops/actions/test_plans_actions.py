@@ -8,10 +8,10 @@ from typing import Union
 logger = logging.getLogger(__name__)
 
 
-
+@action_store.kubiya_action()
 def create_testplan_azure_devops(params: CreateTestPlanParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         test_plan_data = {
@@ -25,9 +25,10 @@ def create_testplan_azure_devops(params: CreateTestPlanParameters):
         logger.error(f"Failed to create testplan : {e}")
         return {"error": str(e)}
 
+@action_store.kubiya_action()
 def delete_testplan_azure_devops(params: DeleteTestPlanParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         planId = params.planId
@@ -38,9 +39,10 @@ def delete_testplan_azure_devops(params: DeleteTestPlanParameters):
         logger.error(f"Failed to delete test plan : {e}")
         return {"error": str(e)}
 
+@action_store.kubiya_action()
 def get_testplan_azure_devops(params: GetTestPlanParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         planId = params.planId
@@ -51,9 +53,11 @@ def get_testplan_azure_devops(params: GetTestPlanParameters):
         logger.error(f"Failed to get test plan : {e}")
         return {"error": str(e)}
 
+
+@action_store.kubiya_action()
 def list_testplan_azure_devops(params: ListTestPlanParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         endpoint = f"/{organization}/{project}/_apis/test/plans"
@@ -64,9 +68,10 @@ def list_testplan_azure_devops(params: ListTestPlanParameters):
         return {"error": str(e)}
 
 
+@action_store.kubiya_action()
 def create_test_runs_azure_devops(params: CreateTestRunsParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         test_runs_data = {
@@ -85,10 +90,11 @@ def create_test_runs_azure_devops(params: CreateTestRunsParameters):
     except Exception as e:
         logger.error(f"Failed to create test runs ] : {e}")
         return {"error": str(e)}
-    
+
+@action_store.kubiya_action()   
 def delete_test_runs_azure_devops(params: DeleteTestRunsParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         runId = params.runId
@@ -98,10 +104,11 @@ def delete_test_runs_azure_devops(params: DeleteTestRunsParameters):
     except Exception as e:
         logger.error(f"Failed to delete test runs ] : {e}")
         return {"error": str(e)}
-    
+
+@action_store.kubiya_action()
 def get_test_runs_azure_devops(params: GetTestRunsParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         runId = params.runId
@@ -112,9 +119,11 @@ def get_test_runs_azure_devops(params: GetTestRunsParameters):
         logger.error(f"Failed to get test runs : {e}")
         return {"error": str(e)}
     
+
+@action_store.kubiya_action()   
 def list_test_runs_azure_devops(params: ListTestRunsParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         # runId = params.runId
@@ -124,10 +133,11 @@ def list_test_runs_azure_devops(params: ListTestRunsParameters):
     except Exception as e:
         logger.error(f"Failed to list test runs : {e}")
         return {"error": str(e)}
-    
+
+@action_store.kubiya_action()
 def get_test_runs_statistics_azure_devops(params: GetTestRunsStatisticsParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         runId = params.runId
@@ -138,9 +148,11 @@ def get_test_runs_statistics_azure_devops(params: GetTestRunsStatisticsParameter
         logger.error(f"Failed to get test runs statistics : {e}")
         return {"error": str(e)}
     
+
+@action_store.kubiya_action()    
 def get_results_test_runs_azure_devops(params: GetTestRunsResultsParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         runId = params.runId
@@ -151,10 +163,12 @@ def get_results_test_runs_azure_devops(params: GetTestRunsResultsParameters):
     except Exception as e:
         logger.error(f"Failed to get results test runs statistics : {e}")
         return {"error": str(e)}
-    
+
+
+@action_store.kubiya_action()
 def list_results_test_runs_azure_devops(params: ListTestRunsResultsParameters):
     try:
-        api_version = "7.0"
+        api_version = "5.0"
         organization = params.organization
         project = params.project
         runId = params.runId

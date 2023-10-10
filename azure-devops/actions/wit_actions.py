@@ -1,11 +1,13 @@
 from .. import action_store as action_store
 from ..azure_devops_wrapper import *
-from ..models.test_plan_models import *
+from ..models.wit_models import *
 # from ..models.nic_models import *
 from typing import Union
 # import json
 
 logger = logging.getLogger(__name__)
+
+
 
 def create_query_work_item_tracking(params: CreateQueryWITParameters):
     try:
@@ -187,7 +189,7 @@ def update_work_item(params: UpdateWorkItemParameters):
         api_version = "7.2-preview.3"
         organization = params.organization
         project = params.project
-        workitemId = params.workitemIds
+        workitemId = params.workitemId
         update_data = {}
         endpoint = f"/{organization}/{project}/_apis/wit/workitems/{workitemId}"
         response = patch_wrapper(endpoint, api_version, data=update_data)

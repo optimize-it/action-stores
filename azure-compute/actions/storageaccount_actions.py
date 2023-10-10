@@ -82,4 +82,19 @@ def list_all_storage_accounts(params: ListStorageParametes) -> List[ListStorageR
     response_data = get_wrapper(endpoint, api_version)
     storage_list = response_data.get('value', [])
     return [ListStorageResponseModel(**storageaccount) for storageaccount in storage_list]
-     
+
+
+
+@action_store.kubiya_action()
+def delete_storage_account(params: DeleteStorageAccount):
+    endpoint = f"/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{params.storageaccountName}"
+    api_version = "2023-01-01"
+    response_data = delete_wrapper(endpoint, api_version)
+    return response_data
+
+@action_store.kubiya_action()
+def get_storage_account(params: GetStorageAccount):
+    endpoint = f"/resourceGroups/{params.resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{params.storageaccountName}"
+    api_version = "2023-01-01"
+    response_data = get_wrapper(endpoint, api_version)
+    return response_data

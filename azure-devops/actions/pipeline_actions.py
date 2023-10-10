@@ -27,11 +27,8 @@ def create_pipeline_azure_devops(params: CreatePipelineParameters):
         #                 }
         pipeline_data = {
                         "name": "MyYamlPipeline",
+                        "folder": "/",
                         "configuration": {
-                            "path": "/azure-pipelines.yml",
-                            "repository": {
-                                "id": "1",  # Replace with your repository ID
-                            },
                             "type": "yaml"
                         }
                     }

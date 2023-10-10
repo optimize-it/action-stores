@@ -58,7 +58,7 @@ def get_blob_container_properties(params: GetContainerPropertiesParameters) -> U
 @action_store.kubiya_action()
 def set_blob_container_properties(params: SetContainerPropertiesParameters):
     try:
-        subscriptionId = params.subscriptionId
+        # subscriptionId = params.subscriptionId
         resourceGroupName = params.resourceGroupName
         storageAccountName = params.storageAccountName
         containerproperties = {
@@ -180,4 +180,3 @@ def get_acl_container(params: GetContainerAcl):
     except Exception as e:
         logger.error(f"Failed to delete container: {e}")
         return {"error": str(e)}
-    

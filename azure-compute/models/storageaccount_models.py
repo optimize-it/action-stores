@@ -40,3 +40,11 @@ class ListStorageResponseModel(BaseModel):
     properties: Optional[dict]
     sku: Optional[dict]
     tags: Optional[dict] = {}
+
+class DeleteStorageAccount(BaseModel):
+    resourceGroupName: str
+    storageaccountName: str
+
+class GetStorageAccount(BaseModel):
+    resourceGroupName: str
+    storageaccountName: str

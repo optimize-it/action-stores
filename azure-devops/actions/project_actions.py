@@ -14,3 +14,21 @@ def list_projects(params: ListProjectParameters):
     endpoint = f"/{organization}/_apis/projects"
     response = get_wrapper_azure_devops(endpoint, api_version)
     return response
+
+def create_project(params: CreateProjectParameters):
+    api_version = "7.1-preview.4"
+    organization = "kubiyaai"
+    project_data = {
+                    "name": params.projectName,
+                    "description": params.projectDescription,
+                    "capabilities": {
+                        "versioncontrol": {
+                        "sourceControlType": "Git"
+                        },
+                        "processTemplate": {
+                        }
+                    }
+                    }
+    endpoint = f"/{organization}/_apis/project"
+    response = post_wrapper_azure_devops(endpoint, api_version, data=project_data)
+    return response

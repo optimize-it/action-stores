@@ -240,7 +240,7 @@ def azure_repos_get_details_commit(params: GetCommitDetailsParameters):
         api_version = "7.2-preview.1"
         organization = params.organization
         project = params.project
-        endpoint = f"{organization}/{project}/_apis/git/repositories/{params.repositoryId}/commits/{params.commitId}"
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/commits/{params.commitId}"
         response = get_wrapper_azure_devops(endpoint , api_version)
         return response
     except Exception as e:
@@ -306,5 +306,27 @@ def azure_repos_update_ref(params: UpdateRefParameters):
         # return [availabilitysetListModel(**availabilityset) for availabilityset in availabilityset_list]
         return response
     except Exception as e:
-        logger.error(f"Failed to get commits: {e}")
+        logger.error(f"Failed to update ref: {e}")
+        return {"error": str(e)}
+    
+def azure_repos_update_refs(params: UpdateRefsParameters):
+    try:
+        api_version = "7.2-preview.1"
+        organization = params.organization
+        project = params.project
+        refs_data = [
+                    {
+                        "name": "refs/heads/vsts-api-sample/answer-woman-flame",
+                        "oldObjectId": "0000000000000000000000000000000000000000",
+                        "newObjectId": "ffe9cba521f00d7f60e322845072238635edb451"
+                    }
+                    ]
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/refs"
+        response = post_wrapper_azure_devops(endpoint , api_version, data=refs_data)
+        # refs_list = response.get('value', [])
+        # availabilityset_list = response_data.get('value', [])
+        # return [availabilitysetListModel(**availabilityset) for availabilityset in availabilityset_list]
+        return response
+    except Exception as e:
+        logger.error(f"Failed to update refs: {e}")
         return {"error": str(e)}
