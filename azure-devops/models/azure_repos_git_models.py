@@ -40,8 +40,13 @@ class GetMergeParemeters(BaseModel):
     organization: str
     project: str
 
-class GetPullRequestsParameters(BaseModel):
+class GetPullRequestParameters(BaseModel):
     pullRequestId: str
+    repositoryId: str
+    organization: str
+    project: str
+
+class GetPullRequestsParameters(BaseModel):
     repositoryId: str
     organization: str
     project: str

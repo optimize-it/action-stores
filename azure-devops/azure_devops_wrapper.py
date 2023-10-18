@@ -69,17 +69,20 @@ def head_wrapper(endpoint: str, api_version: str) -> dict:
     session = get_devops_session()
     base_url = f"https://dev.azure.com"
     url = f"{base_url}{endpoint}?api-version={api_version}"
+    print(url)
     response = session.head(url)
+    print(response)
     if 200 <= response.status_code < 300:
         return response.json()
     else:
         response.raise_for_status()
 
-def post_wrapper_azure_devops(endpoint: str, api_version: str, data: dict = None) -> dict:
+def post_wrapper_azure_devops(endpoint: str, api_version: str, post_data: dict = None) -> dict:
     session = get_devops_session()
     base_url = f"https://dev.azure.com"
     url = f"{base_url}{endpoint}?api-version={api_version}"
-    response = session.post(url,json=data)
+    response = session.post(url,data=post_data)
+    print(response)
     if 200 <= response.status_code < 300:
         print(response.json())
         return response.json()
@@ -107,12 +110,12 @@ def delete_wrapper(endpoint: str, api_version: str) -> dict:
             return {"error": str(err)}
 
 
-def patch_wrapper(endpoint: str, data: dict = None) -> dict:
+def patch_wrapper(endpoint: str,api_version: str, patch_data: dict = None) -> dict:
     session = get_devops_session()
     # subscriptionId = get_subscription_id_secret()
     base_url = f"https://dev.azure.com"
-    url = f"{base_url}{endpoint}"
-    response = session.delete(url,json=data)
+    url = f"{base_url}{endpoint}?api-version={api_version}"
+    response = session.patch(url,json=patch_data)
     if 200 <= response.status_code < 300:
         logger.info(f"Successful PATCH request: {url}")
         return response.status_code
@@ -134,3 +137,64 @@ def put_wrapper_azure_devops(endpoint: str, api_version: str, data: dict = None)
         return response.json()
     else:   
         response.raise_for_status()
+
+def post_wrapper_new(endpoint: str, api_version: str, data: dict = None) -> dict:
+    session = get_devops_session()
+    base_url = f"https://vsrm.dev.azure.com"
+    url = f"{base_url}{endpoint}?api-version={api_version}"
+    response = session.post(url,json=data)
+    if 200 <= response.status_code < 300:
+        print(response.json())
+        return response.json()
+    else:   
+        response.raise_for_status()
+
+def patch_wrapper_new(endpoint: str, data: dict = None) -> dict:
+    session = get_devops_session()
+    # subscriptionId = get_subscription_id_secret()
+    base_url = f"https://vsrm.dev.azure.com"
+    url = f"{base_url}{endpoint}"
+    response = session.delete(url,json=data)
+    if 200 <= response.status_code < 300:
+        logger.info(f"Successful PATCH request: {url}")
+        return response.status_code
+    else:
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            logger.error(f"PATCH request failed with status {response.status_code} for URL: {url}")
+            logger.error(f"Error response: {response.text}")
+            return {"error": str(err)}
+        
+def delete_wrapper_new(endpoint: str, api_version: str) -> dict:
+    session = get_devops_session()
+    # subscriptionId = get_subscription_id_secret()
+    base_url = f"https://vsrm.dev.azure.com"
+    url = f"{base_url}{endpoint}?api-version={api_version}"
+    response = session.delete(url)
+    if 200 <= response.status_code < 300:
+        logger.info(f"Successful delete request: {url}")
+        return {"successfully accepted with status code:" : response.status_code}
+    else:
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            logger.error(f"DELETE request failed with status {response.status_code} for URL: {url}")
+            logger.error(f"Error response: {response.text}")
+            return {"error": str(err)}
+        
+def get_wrapper_new(endpoint: str, api_version: str) -> dict:
+    session = get_devops_session()
+    base_url = f"https://vsrm.dev.azure.com"
+    url = f"{base_url}{endpoint}?api-version={api_version}"
+    response = session.get(url)
+    if 200 <= response.status_code < 300:
+        logger.info(f"Successful GET request: {url}")
+        return response.json()
+    else:
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            logger.error(f"GET request failed with status {response.status_code} for URL: {url}")
+            logger.error(f"Error response: {response.text}")
+            return {"error": str(err)}

@@ -1,1 +1,1 @@
-from .actions import project_actions, pipeline_actions, azure_repos_git_actions, build_actions, test_plans_actions, wit_actions
+from .actions import project_actions, pipeline_actions, azure_repos_git_actions, build_actions, test_plans_actions, wit_actions, release_actions

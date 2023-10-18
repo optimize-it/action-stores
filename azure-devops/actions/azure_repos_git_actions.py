@@ -4,7 +4,7 @@ from .. import action_store as action_store
 from ..azure_devops_wrapper import *
 from ..models.azure_repos_git_models import *
 from typing import Union
-
+import json
 logger = logging.getLogger(__name__)
 
 @action_store.kubiya_action()
@@ -19,9 +19,10 @@ def azure_repos_create_git_repository(params: CreateRepoParameters):
                             "id": params.projectId
                                 }
                      }
+        repo_data_json = json.dumps(repo_data)
         
         endpoint = f"/{organization}/{project}/_apis/git/repositories"
-        response = post_wrapper_azure_devops(endpoint , api_version , data=repo_data)
+        response = post_wrapper_azure_devops(endpoint , api_version, post_data=repo_data_json)
         return response
     except Exception as e:
         logger.error(f"Failed to get azure repos: {e}")
@@ -50,7 +51,8 @@ def azure_repos_update_repository(params: UpdateRepositoryParameters):
                         "isDisabled": params.isDisabled
                         }
         endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}"
-        response = patch_wrapper(endpoint, api_version, data=update_data)
+        response = patch_wrapper(endpoint, api_version, patch_data=update_data)
+        return response
     except Exception as e:
         logger.error(f"Failed to delete azure repository: {e}")
         return {"error": str(e)} 
@@ -75,9 +77,16 @@ def azure_repos_get_git_repostiroty_with_parents(params: GetGitReposParameters):
         api_version = "7.1-preview.1"
         organization = params.organization
         project = params.project
-        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryIdorName}?includeParent=True"
-        response = get_wrapper_azure_devops(endpoint , api_version)
-        return response
+        endpoint = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{params.repositoryIdorName}?includeParent=True&api-version={api_version}"
+        repo_session = get_devops_session()
+        response = repo_session.get(endpoint)
+        if 200 <= response.status_code < 300:
+            return response.json()
+        else:
+            return response.raise_for_status()
+
+        # response = get_wrapper_azure_devops(endpoint , api_version)
+        # return response
     except Exception as e:
         logger.error(f"Failed to get azure repos: {e}")
         return {"error": str(e)}
@@ -109,7 +118,7 @@ def azure_repos_create_merge(params: CreateMergeParemeters):
                 }
         project = params.project
         endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryNameOrId}/merges"
-        response = post_wrapper_azure_devops(endpoint , api_version)
+        response = post_wrapper_azure_devops(endpoint , api_version, data=merge_data)
         return response
     except Exception as e:
         logger.error(f"Failed to list azure repos: {e}")
@@ -130,12 +139,24 @@ def azure_repos_get_merge(params: GetMergeParemeters):
     
 
 @action_store.kubiya_action() 
-def azure_repos_get_pull_requests(params: GetPullRequestsParameters):
+def azure_repos_get_pull_request(params: GetPullRequestParameters):
     try:
         api_version = "7.2-preview.1"
         organization = params.organization
         project = params.project
         endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/pullrequests/{params.pullRequestId}"
+        response = get_wrapper_azure_devops(endpoint , api_version)
+        return response
+    except Exception as e:
+        logger.error(f"Failed to get pull request: {e}")
+        return {"error": str(e)}
+    
+def azure_repos_get_all_pull_requests(params: GetPullRequestsParameters):
+    try:
+        api_version = "7.2-preview.1"
+        organization = params.organization
+        project = params.project
+        endpoint = f"/{organization}/{project}/_apis/git/repositories/{params.repositoryId}/pullrequests"
         response = get_wrapper_azure_devops(endpoint , api_version)
         return response
     except Exception as e:

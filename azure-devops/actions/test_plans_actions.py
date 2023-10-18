@@ -19,7 +19,7 @@ def create_testplan_azure_devops(params: CreateTestPlanParameters):
                             "description": params.testplanDescription
                             }
         endpoint = f"/{organization}/{project}/_apis/test/plans"
-        response = post_wrapper_azure_devops(endpoint, api_version, data = test_plan_data)
+        response = post_wrapper_azure_devops(endpoint, api_version, post_data=test_plan_data)
         return response
     except Exception as e:
         logger.error(f"Failed to create testplan : {e}")
@@ -75,7 +75,7 @@ def create_test_runs_azure_devops(params: CreateTestRunsParameters):
         organization = params.organization
         project = params.project
         test_runs_data = {
-                        "name": params.runsName,
+                        "name": params.runName,
                         "plan": {
                             "id": params.planId
                         },

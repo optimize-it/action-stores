@@ -23,18 +23,19 @@ class GetWIQLParameters(BaseModel):
     organization : str
     project : str
     team: str
-    wiqlId: int
+    wiqlId: str
 
 class GetWIQLByIdParameters(BaseModel):
     organization : str
     project : str
     team: str
-    wiqlId: int
+    wiqlId: str
 
 class GetWIQLByWIQLParameters(BaseModel):
     organization : str
     project : str
     team: str
+    query: str = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.WorkItemType] = 'Task' AND [State] <> 'Closed' AND [State] <> 'Removed' order by [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc"
 
 class CreateWorkItemParameters(BaseModel):
     organization : str
@@ -54,7 +55,7 @@ class GetWorkItemParameters(BaseModel):
 class ListWorkItemParameters(BaseModel):
     organization : str
     project : str
-    workitemIds: list
+    workitemIds: str
 
 class UpdateWorkItemParameters(BaseModel):
     organization : str

@@ -4,30 +4,45 @@ from .. import action_store as action_store
 from ..azure_devops_wrapper import *
 from ..models.build_models import *
 from typing import Union
+import json
 
-
+@action_store.kubiya_action()
 def create_build_defination(params: CreateBuildDefinationParameters):
     try:
-        api_version = "7.0"
+        api_version = "7.1"
         endpoint = f"/{params.organization}/{params.project}/_apis/build/definitions"
         build_defination = {
-                        "name": "MyNewBuildDefinition",
-                        "path": "\\",
-                        "type": "build",
-                        "queue": {
-                            "pool": {"name": "Default"}
-                        },
-                        "repository": {"type": "tfsgit", "id": "1"},
-                        "process": {
-                            "yamlFilename": "azure-pipelines.yml"
+                            "name": "YourBuildDefinitionName",
+                            "process": {
+                                "yamlFilename": "azure-pipelines.yml",  # If using YAML
+                                "type": 2  # 1 for YAML, 2 for Classic (if you're using classic)
+                            },
+                            "repository": {
+                                "type": "TfsGit",
+                                "id": "2a36bd47-4c9e-4dd7-aae4-5d7333756092"  # The ID of your Git repository
+                            },
+                            "queue": {
+                                "pool": {
+                                    "name": "YourBuildAgentPoolName"
+                                }
+                            },
+                            "variables": [],
+                            "triggers": [],
+                            "path": "\\",
+                            "comment": "Initial build definition",
+                            "type": 2,  # Set to 1 for YAML or 2 for Classic
+                            "revision": 17  # Use an appropriate revision number
                         }
-                    }
-        response = post_wrapper_azure_devops(endpoint, api_version, data=build_defination)
+        build_defination_json = json.dumps(build_defination)
+        print(build_defination_json)
+        response = post_wrapper_azure_devops(endpoint, api_version, post_data=build_defination_json)
+        print(response)
         return response
     except Exception as e:
         logger.error(f"Failed to create build defination : {e}")
         return {"error": str(e)}
 
+@action_store.kubiya_action()
 def delete_build_defination(params: DeleteBuildDefinationParameters):
     try:
         api_version = "7.0"
@@ -60,7 +75,8 @@ def list_build_defination(params: ListBuildDefinationParameters):
     except Exception as e:
         logger.error(f"Failed to create build defination : {e}")
         return {"error": str(e)}
-    
+
+@action_store.kubiya_action()    
 def delete_builds(params: DeleteBuildsParameters):
     try:
         api_version = "7.0"
@@ -186,7 +202,7 @@ def builds_get_defination_metrics(params: DefinationMetricsParameters):
 @action_store.kubiya_action()    
 def builds_get_Project_metrics(params: ProjectMetricsParameters):
     try:
-        api_version = "7.0"
+        api_version = "7.1-preview.1"
         endpoint = f"/{params.organization}/{params.project}/_apis/build/metrics"  #/{params.metricAggregationType}
         response = get_wrapper_azure_devops(endpoint, api_version)
         return response
@@ -255,26 +271,26 @@ def build_get_tags(params: GetTagParameters):
     
 
     
-@action_store.kubiya_action()
-def build_add_tags(params: AddTagsParameters):
-    try:
-        api_version = "7.0"
-        # /{organization}/{project}/_apis/build
-        endpoint = f"/{params.organization}/{params.project}/_apis/build/builds/{params.buildId}/tags"
-        tags_list = params.tags
-        load_data = {
-                        "op": "add",
-                        "path": "/fields/System.Tags",
-                        "value": ",".join(tags_list)
-                    }
-        response = post_wrapper_azure_devops(endpoint, api_version, data=load_data)
-        # if 200 <= response.status_code < 300:
-        return response
-        # else:
-        #     return {"Failed": response}
-    except Exception as e:
-        logger.error(f"Failed to add build tags : {e}")
-        return {"error": str(e)}
+# @action_store.kubiya_action()
+# def build_add_tags(params: AddTagsParameters):
+#     try:
+#         api_version = "7.0"
+#         # /{organization}/{project}/_apis/build
+#         endpoint = f"/{params.organization}/{params.project}/_apis/build/builds/{params.buildId}/tags"
+#         tags_list = params.tags
+#         load_data = {
+#                         "op": "add",
+#                         "path": "/fields/System.Tags",
+#                         "value": ",".join(tags_list)
+#                     }
+#         response = post_wrapper_azure_devops(endpoint, api_version, post_data=load_data)
+#         # if 200 <= response.status_code < 300:
+#         return response
+#         # else:
+#         #     return {"Failed": response}
+#     except Exception as e:
+#         logger.error(f"Failed to add build tags : {e}")
+#         return {"error": str(e)}
     
 @action_store.kubiya_action()
 def build_defination_add_tag(params: DefinitionAddTagParameters):
@@ -302,7 +318,7 @@ def build_add_tags(params: DefinitionAddTagsParameters):
                         "path": "/fields/System.Tags",
                         "value": ",".join(tags_list)
                     }
-        response = post_wrapper_azure_devops(endpoint, api_version, data=load_data)
+        response = post_wrapper_azure_devops(endpoint, api_version, post_data=load_data)
         # if 200 <= response.status_code < 300:
         return response
     except Exception as e:

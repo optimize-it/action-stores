@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 @action_store.kubiya_action()
 def create_pipeline_azure_devops(params: CreatePipelineParameters):
     try:
-        api_version = "7.0"
+        api_version = "6.0"
         # pipeline_json_config = {
         #                     "phases": [
         #                         {
@@ -26,18 +26,25 @@ def create_pipeline_azure_devops(params: CreatePipelineParameters):
         #                     ]
         #                 }
         pipeline_data = {
-                        "name": "MyYamlPipeline",
-                        "folder": "/",
-                        "configuration": {
-                            "type": "yaml"
+                        'name': params.pipelineName,
+                        'configuration': {
+                            'repository': {
+                                'id': '2a36bd47-4c9e-4dd7-aae4-5d7333756092',
+                                'type': 'azureReposGit'
+                            },
+                            'path': 'azure-pipelines.yml',
+                            'type': 'yaml',
+                            #'content': pipeline_yaml_base64,
                         }
                     }
+        pipeline_data_json = json.dumps(pipeline_data)
+
 
         
         endpoint = f"/{params.organization}/{params.project}/_apis/pipelines"
         
 
-        response = post_wrapper_azure_devops(endpoint, api_version , data=pipeline_data)
+        response = post_wrapper_azure_devops(endpoint, api_version, post_data=pipeline_data_json)
         print(response)
         return response
     except Exception as e:

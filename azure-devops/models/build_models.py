@@ -101,7 +101,9 @@ class DefinitionAddTagParameters(BaseModel):
     project: str
     definitionId: int
     tag: str  
-
 class DefinitionAddTagsParameters(BaseModel):
-    None
+    organization: str
+    project: str
+    buildId: int
+    tags: str
     
