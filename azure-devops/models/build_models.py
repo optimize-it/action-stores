@@ -1,10 +1,13 @@
 from pydantic import BaseModel
 from typing import Optional, List, Literal
 
+org = Literal['kubiyaai']
+pro = Literal['kubiya']
+
 MetricAggregationType = Literal['hourly','daily']
 class CreateBuildDefinationParameters(BaseModel):
-    organization: str
-    project: str
+    organization: org
+    project: pro
 
 class DeleteBuildDefinationParameters(BaseModel):
     organization: str

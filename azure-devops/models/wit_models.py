@@ -37,10 +37,12 @@ class GetWIQLByWIQLParameters(BaseModel):
     team: str
     query: str = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.WorkItemType] = 'Task' AND [State] <> 'Closed' AND [State] <> 'Removed' order by [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc"
 
+workitemTypes = Literal['Epic','Bug','Task','Issue']
 class CreateWorkItemParameters(BaseModel):
     organization : str
     project : str
-    type: str
+    type: workitemTypes
+    workitemName: str
 
 class DeleteWorkItemParameters(BaseModel):
     organization : str

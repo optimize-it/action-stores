@@ -153,7 +153,7 @@ def create_work_item(params: CreateWorkItemParameters):
         create_work_item_data =[{
                         "op": "add",
                         "path": "/fields/System.Title",
-                        "value": "Sample task4"
+                        "value": params.workitemName
                     }
         ]
         create_work_item_data_json = json.dumps(create_work_item_data)
@@ -168,7 +168,7 @@ def create_work_item(params: CreateWorkItemParameters):
         # print(session.headers)
         url = f'https://dev.azure.com/{organization}/{project}/_apis/wit/workitems/$Task?api-version=7.0'
         response = test.post(url,json=create_work_item_data)
-        return response.status_code
+        return response.json()
     except Exception as e:
         logger.error(f"Failed to create work item : {e}")
         return {"error": str(e)}
