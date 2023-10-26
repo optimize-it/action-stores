@@ -13,7 +13,7 @@ def create_release_azure_devops(params: CreateReleaseParameters):
     organization = params.organization
     project = params.project
     release_data = {
-                    "definitionId": 1,
+                    "definitionId": params.definationId,
                     "description": "Creating Sample release",
                     "artifacts": [
                         {

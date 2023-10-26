@@ -27,10 +27,8 @@ def get_token_for_azure_devops():
 
     # Get the OAuth token
     response = requests.post(token_url, data=token_data, headers={'Content-Type': 'application/x-www-form-urlencoded'})
-    print(response)
     if response.status_code == 200:
         token = response.json()['access_token']
-        print(token)
         return token
         # headers = {
         #     'Authorization': f'Bearer {access_token}',
@@ -133,7 +131,6 @@ def put_wrapper_azure_devops(endpoint: str, api_version: str, data: dict = None)
     url = f"{base_url}{endpoint}?api-version={api_version}"
     response = session.put(url,json=data)
     if 200 <= response.status_code < 300:
-        print(response.json())
         return response.json()
     else:   
         response.raise_for_status()
@@ -144,7 +141,6 @@ def post_wrapper_new(endpoint: str, api_version: str, data: dict = None) -> dict
     url = f"{base_url}{endpoint}?api-version={api_version}"
     response = session.post(url,json=data)
     if 200 <= response.status_code < 300:
-        print(response.json())
         return response.json()
     else:   
         response.raise_for_status()
