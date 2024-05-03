@@ -291,7 +291,7 @@ def get_deployment_replicas(args):
         logger.info("Getting replicas for deployment " + args.get("deployment_name"))
         api_client = clients.get_apps_client()
         api_response = api_client.read_namespaced_deployment(args.get("deployment_name"), args.get("namespace"))
-        logger.info("Replicas for deployment " + args.get("deployment_name") + " is " + str(api_response.spec.replicas))
+        logger.info("Replicas for deployment %s is %s", args.get("deployment_name"), str(api_response.spec.replicas))
         return api_response.spec.replicas
     except api_client.rest.ApiException as e:
         logger.error(e.reason)
