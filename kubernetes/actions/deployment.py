@@ -353,7 +353,7 @@ def scale_deployments(params: DeploymentsReplicasInput):
         else:
             success.append({"deployment": deployment_name, "namespace": params.namespace})
 
-    logger.info(f"Finished scaling deployments")
+    logger.info("Finished scaling deployments")
     if failed:
         return {"success": success, "failed": failed, "error": failed}
     return {"success": success, "failed": failed}
