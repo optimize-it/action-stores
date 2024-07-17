@@ -2,6 +2,7 @@ import typing
 import requests
 
 from .base import BaseClient
+from security import safe_requests
 
 
 class Client(BaseClient):
@@ -65,8 +66,7 @@ class Client(BaseClient):
         all_results = []  # List to store all paginated results
 
         while endpoint:
-            response = requests.get(
-                endpoint if endpoint.startswith("http") else self.BASE_URL + endpoint,
+            response = safe_requests.get(endpoint if endpoint.startswith("http") else self.BASE_URL + endpoint,
                 params=params,
                 auth=(self.user, self.password),
             )
