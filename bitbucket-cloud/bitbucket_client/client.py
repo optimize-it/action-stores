@@ -69,7 +69,7 @@ class Client(BaseClient):
                 endpoint if endpoint.startswith("http") else self.BASE_URL + endpoint,
                 params=params,
                 auth=(self.user, self.password),
-            )
+            timeout=60)
 
             data = self.parse(response)
             if isinstance(data, dict) and "values" in data:
@@ -98,7 +98,7 @@ class Client(BaseClient):
             data=data,
             files=files,
             auth=(self.user, self.password),
-        )
+        timeout=60)
         return self.parse(response)
 
     def _post(self, endpoint, params=None, data=None):
@@ -108,7 +108,7 @@ class Client(BaseClient):
             params=params,
             json=data,
             auth=(self.user, self.password),
-        )
+        timeout=60)
         return self.parse(response)
 
     def _put(self, endpoint, params=None, data=None):
@@ -118,12 +118,12 @@ class Client(BaseClient):
             params=params,
             json=data,
             auth=(self.user, self.password),
-        )
+        timeout=60)
         return self.parse(response)
 
     def _delete(self, endpoint, params=None):
         print(f"DELETE {endpoint}")
         response = requests.delete(
-            self.BASE_URL + endpoint, params=params, auth=(self.user, self.password)
-        )
+            self.BASE_URL + endpoint, params=params, auth=(self.user, self.password), 
+        timeout=60)
         return self.parse(response)
