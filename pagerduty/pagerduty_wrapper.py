@@ -12,7 +12,7 @@ def get_wrapper(path: str):
         "Authorization": f"Token token={api_token}",
         "Accept": "application/vnd.pagerduty+json;version=2"
     }
-    ret = requests.get(f"{api_url}/{path}", headers=headers)
+    ret = requests.get(f"{api_url}/{path}", headers=headers, timeout=60)
     if not ret.ok:
         raise Exception(f"Error: {ret.status_code} {ret.text}")
     return ret.json()
@@ -27,7 +27,7 @@ def post_wrapper(endpoint: str, args: dict = None):
         "Content-Type": "application/json",
         "From": from_email
     }
-    ret = requests.post(f"{api_url}/{endpoint}", json=args, headers=headers)
+    ret = requests.post(f"{api_url}/{endpoint}", json=args, headers=headers, timeout=60)
     if not ret.ok:
         raise Exception(f"Error: {ret.status_code} {ret.text}")
     return ret.json()
