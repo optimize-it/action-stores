@@ -3,7 +3,7 @@ from .secrets import get_secrets
 
 def get_wrapper(path: str):
     host, username, password = get_secrets()
-    ret = requests.get(f"{host}/{path}", auth=(username, password), headers={"Accept": "application/json"})
+    ret = requests.get(f"{host}/{path}", auth=(username, password), headers={"Accept": "application/json"}, timeout=60)
     if not ret.ok:
         raise Exception(f"Error: {ret.status_code} {ret.text}")
     if ret.headers.get("Content-Type","").startswith("application/json"):
@@ -13,12 +13,12 @@ def get_wrapper(path: str):
     
 def get_wrapper_full_response(path: str):
     host, username, password = get_secrets()
-    ret = requests.get(f"{host}/{path}", auth=(username, password), headers={"Accept": "application/json"})
+    ret = requests.get(f"{host}/{path}", auth=(username, password), headers={"Accept": "application/json"}, timeout=60)
     return ret
     
 def post_wrapper(endpoint: str, args: dict=None):
     host, username, password = get_secrets()
-    ret = requests.post(f"{host}{endpoint}", auth=(username, password), data=args, headers={"Content-Type": "application/json", "Accept": "application/json"})
+    ret = requests.post(f"{host}{endpoint}", auth=(username, password), data=args, headers={"Content-Type": "application/json", "Accept": "application/json"}, timeout=60)
     if not ret.ok:
         raise Exception(f"Error: {ret.status_code} {ret.text}")
     if ret.headers.get("Content-Type","").startswith("application/json"):
@@ -28,5 +28,5 @@ def post_wrapper(endpoint: str, args: dict=None):
 
 def post_wrapper_full_response(endpoint: str, args: dict=None):
     host, username, password = get_secrets()
-    ret = requests.post(f"{host}{endpoint}", auth=(username, password), data=args, headers={"Content-Type": "application/json", "Accept": "application/json"})
+    ret = requests.post(f"{host}{endpoint}", auth=(username, password), data=args, headers={"Content-Type": "application/json", "Accept": "application/json"}, timeout=60)
     return ret
